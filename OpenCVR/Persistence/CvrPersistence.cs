@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using OpenCVR.Model;
-#if (linux)
+#if (__MonoCS__)
 using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
 using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
 #else
