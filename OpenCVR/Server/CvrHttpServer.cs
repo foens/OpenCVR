@@ -10,6 +10,7 @@ namespace OpenCVR.Server
     {
         private ICvrPersistence persistence;
         private readonly HttpListener httpListener;
+        private volatile bool isListening;
         private Thread serverThread;
 
 
@@ -27,6 +28,7 @@ namespace OpenCVR.Server
 
         public void Start()
         {
+            isListening = true;
             httpListener.Start();
             serverThread = new Thread(Listen);
             serverThread.Start();
@@ -34,7 +36,7 @@ namespace OpenCVR.Server
 
         private void Listen()
         {
-            while (httpListener.IsListening)
+            while (isListening)
             {
                 var beginGetContext = httpListener.BeginGetContext(ListenerCallback, httpListener);
                 beginGetContext.AsyncWaitHandle.WaitOne();
@@ -43,7 +45,7 @@ namespace OpenCVR.Server
 
         private void ListenerCallback(IAsyncResult result)
         {
-            if (!httpListener.IsListening)
+            if (!isListening)
                 return;
             
             HttpListenerContext context = httpListener.EndGetContext(result);
@@ -58,6 +60,7 @@ namespace OpenCVR.Server
 
         public void Stop()
         {
+            isListening = false;
             httpListener.Close();
             serverThread.Join();
         }
