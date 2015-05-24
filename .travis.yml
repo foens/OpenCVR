@@ -3,6 +3,6 @@ install:
   - nuget restore OpenCVR.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=Release OpenCVR.sln
+  - xbuild /p:Configuration=Release /p:Platform=x64 OpenCVR.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./OpenCVR.Test.Unit/bin/Release/OpenCVR.Test.Unit.dll
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./OpenCVR.Test.Integration/bin/Release/OpenCVR.Test.Integration.dll

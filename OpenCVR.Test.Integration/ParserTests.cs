@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using CsvHelper.TypeConversion;
 using NUnit.Framework;
 using OpenCVR.Update.Parse;
@@ -14,7 +15,7 @@ namespace OpenCVR.Test.Integration
             try
             {
                 var parser = new CvrParser(new CompanyParser());
-                parser.Parse(@"..\..\test-data.zip");
+                parser.Parse(Path.Combine("..", "..", @"test-data.zip"));
             }
             catch (CsvTypeConverterException e)
             {
