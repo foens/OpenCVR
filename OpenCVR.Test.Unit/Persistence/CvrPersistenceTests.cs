@@ -68,5 +68,41 @@ namespace OpenCVR.Test.Unit.Persistence
 
             Assert.AreEqual(c, persistence.FindWithVat(c.VatNumber));
         }
+
+        [Test]
+        public void TestCanQueryLastUpdateTimeWithDefaultValueOf0()
+        {
+            persistence.UpgradeSchemaIfRequired();
+
+            var lastUpdateTime = persistence.GetLastUpdateTime();
+
+            Assert.AreEqual(DateTime.MinValue, lastUpdateTime);
+        }
+
+        [Test]
+        public void TestCanInsertLastUpdateTime()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var insertedLastUpdateTme = DateTime.Now;
+
+            persistence.SetLastUpdateTime(insertedLastUpdateTme);
+            var lastUpdateTime = persistence.GetLastUpdateTime();
+
+            Assert.AreEqual(insertedLastUpdateTme, lastUpdateTime);
+        }
+
+        [Test]
+        public void TestCanUpdateLastUpdateTimeMultipleTimes()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var firstInsertDate = DateTime.Now;
+            var secondInsertDate = firstInsertDate.AddDays(12);
+
+            persistence.SetLastUpdateTime(firstInsertDate);
+            persistence.SetLastUpdateTime(secondInsertDate);
+            var lastUpdateTime = persistence.GetLastUpdateTime();
+
+            Assert.AreEqual(secondInsertDate, lastUpdateTime);
+        }
     }
 }

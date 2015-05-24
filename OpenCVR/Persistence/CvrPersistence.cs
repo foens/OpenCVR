@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using OpenCVR.Model;
 #if (__MonoCS__)
 using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
 using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
+using SQLiteReader = Mono.Data.Sqlite.SqliteReader;
 #else
 using System.Data.SQLite;
 #endif
@@ -27,7 +29,7 @@ namespace OpenCVR.Persistence
             {
                 if (GetUserVersion() == 0)
                 {
-                    ExecuteCommand("CREATE TABLE Company" +
+                    ExecuteNonQuery("CREATE TABLE Company" +
                                    "(" +
                         "Vat INT PRIMARY KEY NOT NULL," +
                          "StartDate int, " +
@@ -36,8 +38,12 @@ namespace OpenCVR.Persistence
                          "OptedOutForUnsolicictedAdvertising int, " +
                          "NameValidFrom int" +
                         ");");
-                    // TODO Create schema
-                    // TODO Move functionality to some PersistenceMaintainer class
+
+                    ExecuteNonQuery("CREATE TABLE KeyValue" +
+                                   "(" +
+                        "Key text PRIMARY KEY NOT NULL," +
+                         "Value text" +
+                        ");");
                     SetUserVersion(1);
                 }
                 transaction.Commit();
@@ -51,10 +57,10 @@ namespace OpenCVR.Persistence
 
         private void SetUserVersion(long userVersion)
         {
-            ExecuteCommand("PRAGMA user_version = " + userVersion);
+            ExecuteNonQuery("PRAGMA user_version = " + userVersion);
         }
 
-        private void ExecuteCommand(string commandText, Dictionary<string, object> parameters = null)
+        private void ExecuteNonQuery(string commandText, Dictionary<string, object> parameters = null)
         {
             var command = new SQLiteCommand
             {
@@ -68,8 +74,24 @@ namespace OpenCVR.Persistence
                     command.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
             }
-
             command.ExecuteNonQuery();
+        }
+
+        private SQLiteDataReader ExecuteQuery(string commandText, Dictionary<string, object> parameters = null)
+        {
+            var command = new SQLiteCommand
+            {
+                Connection = connection,
+                CommandText = commandText
+            };
+            if (parameters != null)
+            {
+                foreach (var parameter in parameters)
+                {
+                    command.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                }
+            }
+            return command.ExecuteReader();
         }
 
         private long GetUserVersion()
@@ -89,7 +111,7 @@ namespace OpenCVR.Persistence
             {
                 foreach (var company in companies)
                 {
-                    ExecuteCommand("INSERT INTO Company " +
+                    ExecuteNonQuery("INSERT INTO Company " +
                                    "(Vat, StartDate, EndDate, UpdatedDate, OptedOutForUnsolicictedAdvertising, NameValidFrom) VALUES " +
                                    "(@vat,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom)", new Dictionary<string, object>
                     {
@@ -159,6 +181,30 @@ namespace OpenCVR.Persistence
             if (unixTimeStamp == null)
                 return null;
             return UnixTimeStampToDateTime((int)unixTimeStamp);
+        }
+
+        public DateTime GetLastUpdateTime()
+        {
+            using (var r = ExecuteQuery("SELECT Value FROM KeyValue WHERE Key = @key", new Dictionary<string, object>
+            {
+                {"@key", "lastUpdateTime"}
+            }))
+            {
+                if (r.HasRows && r.Read())
+                {
+                    return DateTime.ParseExact((string) r["Value"], "O", CultureInfo.InvariantCulture);
+                }
+                return DateTime.MinValue;
+            }
+        }
+
+        public void SetLastUpdateTime(DateTime updateTime)
+        {
+            ExecuteNonQuery("INSERT OR REPLACE INTO KeyValue (Key, Value) VALUES (@key, @value)", new Dictionary<string, object>
+            {
+                {"@key", "lastUpdateTime" },
+                {"@value", updateTime.ToString("O", CultureInfo.InvariantCulture) },
+            });
         }
     }
 }
