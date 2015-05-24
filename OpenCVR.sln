@@ -7,11 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCVR", "OpenCVR\OpenCVR.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCVR.Test.Unit", "OpenCVR.Test.Unit\OpenCVR.Test.Unit.csproj", "{47B9FC50-648E-4101-8DC8-815BB8676D83}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{369F0A71-9B23-455A-997F-F7723FDCF0CA}"
-	ProjectSection(SolutionItems) = preProject
-		Documentation.md = Documentation.md
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCVR.Test.Integration", "OpenCVR.Test.Integration\OpenCVR.Test.Integration.csproj", "{DE9BA9F1-091A-4907-A9F0-97F2FC8098D1}"
 EndProject
 Global

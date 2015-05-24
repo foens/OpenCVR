@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using OpenCVR;
 using OpenCVR.Persistence;
 using OpenCVR.Server;
 using OpenCVR.Update;

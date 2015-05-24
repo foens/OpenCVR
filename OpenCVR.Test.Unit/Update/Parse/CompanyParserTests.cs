@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using OpenCVR.Model;
+using OpenCVR.Model.Occupation;
 using OpenCVR.Update.Parse;
-using OpenCVR.Update.Parse.Model;
-using OpenCVR.Update.Parse.Model.Occupation;
 
 namespace OpenCVR.Test.Unit.Update.Parse
 {

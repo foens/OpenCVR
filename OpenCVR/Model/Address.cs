@@ -1,6 +1,6 @@
 using System;
 
-namespace OpenCVR.Update.Parse.Model
+namespace OpenCVR.Model
 {
     public class Address
     {

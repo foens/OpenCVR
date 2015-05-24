@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using OpenCVR.Update.Parse.Model;
+using OpenCVR.Model;
 
 namespace OpenCVR.Update.Parse
 {

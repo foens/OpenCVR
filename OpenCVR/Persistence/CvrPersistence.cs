@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using OpenCVR.Update.Parse;
-using OpenCVR.Update.Parse.Model;
+using OpenCVR.Model;
 #if (linux)
 using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
 using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;

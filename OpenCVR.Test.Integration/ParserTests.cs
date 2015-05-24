@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using CsvHelper.TypeConversion;
 using NUnit.Framework;
 using OpenCVR.Update.Parse;
 

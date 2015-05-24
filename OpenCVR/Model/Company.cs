@@ -1,7 +1,7 @@
 ﻿using System;
-using OpenCVR.Update.Parse.Model.Occupation;
+using OpenCVR.Model.Occupation;
 
-namespace OpenCVR.Update.Parse.Model
+namespace OpenCVR.Model
 {
     public class Company
     {

@@ -1,4 +1,4 @@
-﻿namespace OpenCVR.Update.Parse.Model
+﻿namespace OpenCVR.Model
 {
     public class DeltaCompany : Company
     {

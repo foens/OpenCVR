@@ -1,8 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
+using OpenCVR.Model;
 using OpenCVR.Persistence;
 using OpenCVR.Update.Parse;
-using OpenCVR.Update.Parse.Model;
 #if (linux)
 using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
 using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;

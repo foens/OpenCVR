@@ -84,8 +84,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\Company.cs" />
+    <Compile Include="Model\CompanyType.cs" />
+    <Compile Include="Model\ContactDetail.cs" />
+    <Compile Include="Model\DeltaCompany.cs" />
+    <Compile Include="Model\Industry.cs" />
+    <Compile Include="Model\Interval.cs" />
+    <Compile Include="Model\ModificationStatus.cs" />
+    <Compile Include="Model\Occupation\CommonOccupationStatistic.cs" />
+    <Compile Include="Model\Occupation\MonthlyOccupationStatistic.cs" />
+    <Compile Include="Model\Occupation\OccupationStatistics.cs" />
+    <Compile Include="Model\Occupation\QuaterlyOccupationStatistic.cs" />
+    <Compile Include="Model\Occupation\YearlyOccupationStatistic.cs" />
     <Compile Include="OpenCvrModule.cs" />
-    <Compile Include="OpenCVRRunner.cs" />
+    <Compile Include="OpenCvrRunner.cs" />
     <Compile Include="SecretConfigurationFetcher.cs" />
     <Compile Include="Persistence\CvrPersistence.cs" />
     <Compile Include="Persistence\ICvrPersistence.cs" />
@@ -107,23 +120,10 @@
     <Compile Include="Update\Parse\Mapping\ConvertUtil.cs" />
     <Compile Include="Update\Parse\Mapping\IndustryMap.cs" />
     <Compile Include="Update\Parse\Mapping\NullStringConverter.cs" />
-    <Compile Include="Update\Parse\Model\Address.cs" />
     <Compile Include="Update\Parse\CompanyParser.cs" />
-    <Compile Include="Update\Parse\Model\CompanyType.cs" />
-    <Compile Include="Update\Parse\Model\ContactDetail.cs" />
     <Compile Include="Update\Parse\CvrEntries.cs" />
-    <Compile Include="Update\Parse\Model\Company.cs" />
-    <Compile Include="Update\Parse\Model\DeltaCompany.cs" />
     <Compile Include="Update\Parse\Mapping\DeltaCompanyMap.cs" />
     <Compile Include="Update\Parse\ICvrParser.cs" />
-    <Compile Include="Update\Parse\Model\Industry.cs" />
-    <Compile Include="Update\Parse\Model\Interval.cs" />
-    <Compile Include="Update\Parse\Model\ModificationStatus.cs" />
-    <Compile Include="Update\Parse\Model\Occupation\MonthlyOccupationStatistic.cs" />
-    <Compile Include="Update\Parse\Model\Occupation\OccupationStatistics.cs" />
-    <Compile Include="Update\Parse\Model\Occupation\CommonOccupationStatistic.cs" />
-    <Compile Include="Update\Parse\Model\Occupation\QuaterlyOccupationStatistic.cs" />
-    <Compile Include="Update\Parse\Model\Occupation\YearlyOccupationStatistic.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
