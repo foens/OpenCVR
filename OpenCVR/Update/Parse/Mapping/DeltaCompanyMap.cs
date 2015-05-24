@@ -47,6 +47,8 @@ namespace OpenCVR.Update.Parse.Mapping
                     return ModificationStatus.New;
                 case "fjernet":
                     return ModificationStatus.Removed;
+                case "modificeret":
+                    return ModificationStatus.Modified;
             }
             throw new Exception("Unknown ModificationStatus: " + value);
         }

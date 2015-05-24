@@ -3,6 +3,7 @@
     public enum ModificationStatus
     {
         New,
-        Removed
+        Removed,
+        Modified
     }
 }
