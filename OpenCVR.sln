@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCVR", "OpenCVR\OpenCVR.csproj", "{B7435D3A-34B6-4F4D-B990-A72D2E2DCF4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCVR.Test.Unit", "OpenCVR.Test.Unit\OpenCVR.Test.Unit.csproj", "{47B9FC50-648E-4101-8DC8-815BB8676D83}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{369F0A71-9B23-455A-997F-F7723FDCF0CA}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation.md = Documentation.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCVR.Test.Integration", "OpenCVR.Test.Integration\OpenCVR.Test.Integration.csproj", "{DE9BA9F1-091A-4907-A9F0-97F2FC8098D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7435D3A-34B6-4F4D-B990-A72D2E2DCF4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7435D3A-34B6-4F4D-B990-A72D2E2DCF4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7435D3A-34B6-4F4D-B990-A72D2E2DCF4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7435D3A-34B6-4F4D-B990-A72D2E2DCF4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47B9FC50-648E-4101-8DC8-815BB8676D83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47B9FC50-648E-4101-8DC8-815BB8676D83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47B9FC50-648E-4101-8DC8-815BB8676D83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47B9FC50-648E-4101-8DC8-815BB8676D83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE9BA9F1-091A-4907-A9F0-97F2FC8098D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE9BA9F1-091A-4907-A9F0-97F2FC8098D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE9BA9F1-091A-4907-A9F0-97F2FC8098D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE9BA9F1-091A-4907-A9F0-97F2FC8098D1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

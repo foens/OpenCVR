@@ -1,0 +1,34 @@
+using System;
+using System.IO;
+using System.Net;
+using NLog;
+
+namespace OpenCVR.Update.Http
+{
+    internal class HttpService : IHttpService
+    {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private readonly string downloadFolder;
+
+        public HttpService(string downloadFolder)
+        {
+            this.downloadFolder = downloadFolder;
+        }
+
+        public string Download(Uri url, ICredentials authenticationCredentials)
+        {
+            var outputPath = Path.Combine(downloadFolder, Path.GetFileName(url.LocalPath));
+            if (File.Exists(outputPath))
+            {
+                logger.Info("Skipping download since local file already exists {0}", outputPath);
+                return outputPath;
+            }
+            logger.Info("Downloading file {0}", url);
+            var client = new WebClient {Credentials = authenticationCredentials};
+            client.DownloadFile(url, outputPath);
+            logger.Info("File downloaded to {0}", outputPath);
+            return outputPath;
+        }
+    }
+}
