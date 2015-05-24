@@ -17,9 +17,11 @@ namespace OpenCVR.Test.Integration
                 var parser = new CvrParser(new CompanyParser());
                 parser.Parse(Path.Combine("..", "..", @"test-data.zip"));
             }
-            catch (CsvTypeConverterException e)
+            catch (Exception e)
             {
-                throw new Exception("CSV parse exception. Details:" + e.Data["CsvHelper"], e);
+                if(e.Data.Contains("CsvHelper"))
+                    throw new Exception("CSV parse exception. Details:" + e.Data["CsvHelper"], e);
+                throw;
             }
         }
     }

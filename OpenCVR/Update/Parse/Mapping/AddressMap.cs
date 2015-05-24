@@ -1,4 +1,5 @@
 using CsvHelper.Configuration;
+using OpenCVR.Update.Parse.Model;
 
 namespace OpenCVR.Update.Parse.Mapping
 {

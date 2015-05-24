@@ -1,11 +1,11 @@
 using System;
 
-namespace OpenCVR.Update.Parse
+namespace OpenCVR.Update.Parse.Model
 {
     public class CompanyType
     {
         public DateTime? ValidFrom { get; set; }
-        public int Code { get; set; }
+        public int? Code { get; set; }
         public string Text { get; set; }
         public string ResponsibleDataSupplier { get; set; }
 
@@ -26,7 +26,7 @@ namespace OpenCVR.Update.Parse
         {
             unchecked
             {
-                var hashCode = Code;
+                var hashCode = Code.GetHashCode();
                 hashCode = (hashCode*397) ^ (ResponsibleDataSupplier != null ? ResponsibleDataSupplier.GetHashCode() : 0);
                 hashCode = (hashCode*397) ^ (Text != null ? Text.GetHashCode() : 0);
                 hashCode = (hashCode*397) ^ ValidFrom.GetHashCode();

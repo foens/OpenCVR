@@ -1,11 +1,11 @@
 using System;
 
-namespace OpenCVR.Update.Parse
+namespace OpenCVR.Update.Parse.Model
 {
     public class Industry
     {
-        public DateTime ValidFrom { get; set; }
-        public int Code { get; set; }
+        public DateTime? ValidFrom { get; set; }
+        public int? Code { get; set; }
         public string Text { get; set; }
 
         protected bool Equals(Industry other)
@@ -25,7 +25,7 @@ namespace OpenCVR.Update.Parse
         {
             unchecked
             {
-                var hashCode = Code;
+                var hashCode = Code.GetHashCode();
                 hashCode = (hashCode*397) ^ (Text != null ? Text.GetHashCode() : 0);
                 hashCode = (hashCode*397) ^ ValidFrom.GetHashCode();
                 return hashCode;

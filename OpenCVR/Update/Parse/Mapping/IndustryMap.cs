@@ -1,4 +1,5 @@
 using CsvHelper.Configuration;
+using OpenCVR.Update.Parse.Model;
 
 namespace OpenCVR.Update.Parse.Mapping
 {
@@ -8,7 +9,7 @@ namespace OpenCVR.Update.Parse.Mapping
         {
             Map(m => m.ValidFrom).ConvertUsing(r => ConvertUtil.ConvertDate(r.GetField("hovedbranche_gyldigFra")));
             Map(m => m.Code).Name("hovedbranche_kode");
-            Map(m => m.Text).Name("hovedbranche_tekst");
+            Map(m => m.Text).Name("hovedbranche_tekst").TypeConverter<NullStringConverter>();
         }
     }
 }

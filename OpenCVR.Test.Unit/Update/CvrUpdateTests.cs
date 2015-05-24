@@ -7,6 +7,7 @@ using OpenCVR.Update;
 using OpenCVR.Update.Email;
 using OpenCVR.Update.Http;
 using OpenCVR.Update.Parse;
+using OpenCVR.Update.Parse.Model;
 
 namespace OpenCVR.Test.Unit.Update
 {

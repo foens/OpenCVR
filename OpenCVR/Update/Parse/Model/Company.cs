@@ -1,8 +1,7 @@
 ﻿using System;
-using Microsoft.Exchange.WebServices.Data;
 using OpenCVR.Update.Parse.Model.Occupation;
 
-namespace OpenCVR.Update.Parse
+namespace OpenCVR.Update.Parse.Model
 {
     public class Company
     {

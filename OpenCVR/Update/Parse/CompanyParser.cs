@@ -5,6 +5,7 @@ using System.Linq;
 using CsvHelper;
 using NLog;
 using OpenCVR.Update.Parse.Mapping;
+using OpenCVR.Update.Parse.Model;
 
 namespace OpenCVR.Update.Parse
 {

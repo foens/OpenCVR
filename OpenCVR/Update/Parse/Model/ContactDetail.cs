@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenCVR.Update.Parse
+namespace OpenCVR.Update.Parse.Model
 {
     public class ContactDetail
     {

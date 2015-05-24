@@ -1,7 +1,6 @@
 ﻿using System;
-using CsvHelper;
 using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
+using OpenCVR.Update.Parse.Model;
 
 namespace OpenCVR.Update.Parse.Mapping
 {
