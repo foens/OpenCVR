@@ -62,36 +62,12 @@ namespace OpenCVR.Persistence
 
         private void ExecuteNonQuery(string commandText, Dictionary<string, object> parameters = null)
         {
-            var command = new SQLiteCommand
-            {
-                Connection = connection,
-                CommandText = commandText
-            };
-            if (parameters != null)
-            {
-                foreach (var parameter in parameters)
-                {
-                    command.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-            }
-            command.ExecuteNonQuery();
+            PersistenceUtil.CreateCommand(connection, commandText, parameters).ExecuteNonQuery();
         }
 
         private SQLiteDataReader ExecuteQuery(string commandText, Dictionary<string, object> parameters = null)
         {
-            var command = new SQLiteCommand
-            {
-                Connection = connection,
-                CommandText = commandText
-            };
-            if (parameters != null)
-            {
-                foreach (var parameter in parameters)
-                {
-                    command.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-            }
-            return command.ExecuteReader();
+            return PersistenceUtil.CreateCommand(connection, commandText, parameters).ExecuteReader();
         }
 
         private long GetUserVersion()
@@ -116,11 +92,11 @@ namespace OpenCVR.Persistence
                                    "(@vat,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom)", new Dictionary<string, object>
                     {
                         {"@vat", company.VatNumber },
-                        {"@startDate",  OptionalDateTimeToUnixTimeStamp(company.StartDate)},
-                        {"@endDate",  OptionalDateTimeToUnixTimeStamp(company.EndDate)},
-                        {"@updateDate",  OptionalDateTimeToUnixTimeStamp(company.UpdatedDate)},
+                        {"@startDate",  PersistenceUtil.OptionalDateTimeToUnixTimeStamp(company.StartDate)},
+                        {"@endDate",  PersistenceUtil.OptionalDateTimeToUnixTimeStamp(company.EndDate)},
+                        {"@updateDate",  PersistenceUtil.OptionalDateTimeToUnixTimeStamp(company.UpdatedDate)},
                         {"@OptedOutForUnsolicictedAdvertising",  company.OptedOutForUnsolicictedAdvertising ? 1 : 0},
-                        {"@nameValidFrom",  OptionalDateTimeToUnixTimeStamp(company.NameValidFrom)},
+                        {"@nameValidFrom",  PersistenceUtil.OptionalDateTimeToUnixTimeStamp(company.NameValidFrom)},
                     });
                 }
                 transaction.Commit();
@@ -132,55 +108,27 @@ namespace OpenCVR.Persistence
             }
         }
 
-        private static object OptionalDateTimeToUnixTimeStamp(DateTime? d)
-        {
-            if (d.HasValue)
-                return DateTimeToUnixTimestamp(d.Value);
-            return null;
-        }
-
-        internal static DateTime UnixTimeStampToDateTime(int unixTimeStamp)
-        {
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            return dtDateTime.AddSeconds(unixTimeStamp);
-        }
-
-        internal static int DateTimeToUnixTimestamp(DateTime dateTime)
-        {
-            return (int) (dateTime - new DateTime(1970, 1, 1)).TotalSeconds;
-        }
-
         public Company FindWithVat(int vatNumber)
         {
-            var c = new SQLiteCommand
+            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat = @vat", new Dictionary<string, object>
             {
-                Connection = connection,
-                CommandText = "SELECT * FROM Company WHERE Vat = @vat"
-            };
-            c.Parameters.AddWithValue("@vat", vatNumber);
-            using (var r = c.ExecuteReader())
+                {"@vat", vatNumber }
+            }))
             {
                 if (r.HasRows && r.Read())
                 {
                     return new Company
                     {
                         VatNumber = (int) r["Vat"],
-                        StartDate = OptionalUnixTimeStampToDateTime(r["StartDate"]),
-                        EndDate = OptionalUnixTimeStampToDateTime(r["EndDate"]),
-                        UpdatedDate = OptionalUnixTimeStampToDateTime(r["UpdatedDate"]),
+                        StartDate = PersistenceUtil.OptionalUnixTimeStampToDateTime(r["StartDate"]),
+                        EndDate = PersistenceUtil.OptionalUnixTimeStampToDateTime(r["EndDate"]),
+                        UpdatedDate = PersistenceUtil.OptionalUnixTimeStampToDateTime(r["UpdatedDate"]),
                         OptedOutForUnsolicictedAdvertising = 1 == (int)r["OptedOutForUnsolicictedAdvertising"],
-                        NameValidFrom = OptionalUnixTimeStampToDateTime(r["nameValidFrom"])
+                        NameValidFrom = PersistenceUtil.OptionalUnixTimeStampToDateTime(r["nameValidFrom"])
                     };
                 }
                 throw new Exception();
             }
-        }
-
-        private DateTime? OptionalUnixTimeStampToDateTime(object unixTimeStamp)
-        {
-            if (unixTimeStamp == null)
-                return null;
-            return UnixTimeStampToDateTime((int)unixTimeStamp);
         }
 
         public DateTime GetLastUpdateTime()

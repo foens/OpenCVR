@@ -43,14 +43,6 @@ namespace OpenCVR.Test.Unit.Persistence
         }
 
         [Test]
-        public void TestUnixTime()
-        {
-            DateTime original = DateTime.Today;
-            var converted = CvrPersistence.UnixTimeStampToDateTime(CvrPersistence.DateTimeToUnixTimestamp(original));
-            Assert.AreEqual(original, converted);
-        }
-
-        [Test]
         public void TestCanInsertNewCompany()
         {
             persistence.UpgradeSchemaIfRequired();

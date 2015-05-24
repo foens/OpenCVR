@@ -99,6 +99,7 @@
     <Compile Include="Model\Occupation\YearlyOccupationStatistic.cs" />
     <Compile Include="OpenCvrModule.cs" />
     <Compile Include="OpenCvrRunner.cs" />
+    <Compile Include="Persistence\PersistenceUtil.cs" />
     <Compile Include="SecretConfigurationFetcher.cs" />
     <Compile Include="Persistence\CvrPersistence.cs" />
     <Compile Include="Persistence\ICvrPersistence.cs" />
