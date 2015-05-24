@@ -5,7 +5,7 @@ using OpenCVR.Model;
 #if (__MonoCS__)
 using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
 using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
-using SQLiteReader = Mono.Data.Sqlite.SqliteReader;
+using SQLiteDataReader = Mono.Data.Sqlite.SqliteDataReader;
 #else
 using System.Data.SQLite;
 #endif
