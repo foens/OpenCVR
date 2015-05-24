@@ -11,29 +11,29 @@ namespace OpenCVR.Persistence
 {
     internal class PersistenceUtil
     {
-        public static DateTime? OptionalUnixTimeStampToDateTime(object unixTimeStamp)
+        public static DateTime? OptionalMillisecondsSinceEpochToDateTime(object unixTimeStamp)
         {
             if (unixTimeStamp == null)
                 return null;
-            return UnixTimeStampToDateTime((int)unixTimeStamp);
+            return MillisecondsSinceEpochToDateTime((long)unixTimeStamp);
         }
 
-        public static object OptionalDateTimeToUnixTimeStamp(DateTime? d)
-        {
-            if (d.HasValue)
-                return DateTimeToUnixTimestamp(d.Value);
-            return null;
-        }
-
-        public static DateTime UnixTimeStampToDateTime(int unixTimeStamp)
+        public static DateTime MillisecondsSinceEpochToDateTime(long unixTimeStamp)
         {
             DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            return dtDateTime.AddSeconds(unixTimeStamp);
+            return dtDateTime.AddMilliseconds(unixTimeStamp);
         }
 
-        public static int DateTimeToUnixTimestamp(DateTime dateTime)
+        public static object OptionalDateTimeMillisecondsSinceEpoch(DateTime? d)
         {
-            return (int)(dateTime - new DateTime(1970, 1, 1)).TotalSeconds;
+            if (d.HasValue)
+                return DateTimeToMillisecondsSinceEpoch(d.Value);
+            return null;
+        }
+        
+        public static long DateTimeToMillisecondsSinceEpoch(DateTime dateTime)
+        {
+            return (long)(dateTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
         }
 
         public static SQLiteCommand CreateCommand(SQLiteConnection connection, string commandText, Dictionary<string, object> parameters)

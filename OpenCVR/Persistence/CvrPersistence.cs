@@ -92,11 +92,11 @@ namespace OpenCVR.Persistence
                                    "(@vat,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom)", new Dictionary<string, object>
                     {
                         {"@vat", company.VatNumber },
-                        {"@startDate",  PersistenceUtil.OptionalDateTimeToUnixTimeStamp(company.StartDate)},
-                        {"@endDate",  PersistenceUtil.OptionalDateTimeToUnixTimeStamp(company.EndDate)},
-                        {"@updateDate",  PersistenceUtil.OptionalDateTimeToUnixTimeStamp(company.UpdatedDate)},
+                        {"@startDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(company.StartDate)},
+                        {"@endDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(company.EndDate)},
+                        {"@updateDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(company.UpdatedDate)},
                         {"@OptedOutForUnsolicictedAdvertising",  company.OptedOutForUnsolicictedAdvertising ? 1 : 0},
-                        {"@nameValidFrom",  PersistenceUtil.OptionalDateTimeToUnixTimeStamp(company.NameValidFrom)},
+                        {"@nameValidFrom",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(company.NameValidFrom)},
                     });
                 }
                 transaction.Commit();
@@ -120,22 +120,22 @@ namespace OpenCVR.Persistence
                     return new Company
                     {
                         VatNumber = (int) r["Vat"],
-                        StartDate = PersistenceUtil.OptionalUnixTimeStampToDateTime(r["StartDate"]),
-                        EndDate = PersistenceUtil.OptionalUnixTimeStampToDateTime(r["EndDate"]),
-                        UpdatedDate = PersistenceUtil.OptionalUnixTimeStampToDateTime(r["UpdatedDate"]),
+                        StartDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("StartDate"))),
+                        EndDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("EndDate"))),
+                        UpdatedDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("UpdatedDate"))),
                         OptedOutForUnsolicictedAdvertising = 1 == (int)r["OptedOutForUnsolicictedAdvertising"],
-                        NameValidFrom = PersistenceUtil.OptionalUnixTimeStampToDateTime(r["nameValidFrom"])
+                        NameValidFrom = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("nameValidFrom")))
                     };
                 }
                 throw new Exception();
             }
         }
 
-        public DateTime GetLastUpdateTime()
+        public DateTime GetLastProcessedEmailReceivedTime()
         {
             using (var r = ExecuteQuery("SELECT Value FROM KeyValue WHERE Key = @key", new Dictionary<string, object>
             {
-                {"@key", "lastUpdateTime"}
+                {"@key", "lastProcessedEmailReceivedTime"}
             }))
             {
                 if (r.HasRows && r.Read())
@@ -146,11 +146,11 @@ namespace OpenCVR.Persistence
             }
         }
 
-        public void SetLastUpdateTime(DateTime updateTime)
+        public void SetLastProcessedEmailReceivedTime(DateTime updateTime)
         {
             ExecuteNonQuery("INSERT OR REPLACE INTO KeyValue (Key, Value) VALUES (@key, @value)", new Dictionary<string, object>
             {
-                {"@key", "lastUpdateTime" },
+                {"@key", "lastProcessedEmailReceivedTime" },
                 {"@value", updateTime.ToString("O", CultureInfo.InvariantCulture) },
             });
         }

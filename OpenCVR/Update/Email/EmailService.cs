@@ -34,7 +34,8 @@ namespace OpenCVR.Update.Email
                 //TraceEnabled = true,
                 //TraceFlags = TraceFlags.All,
                 Credentials = exhangeServiceCredentials,
-                UseDefaultCredentials = false
+                UseDefaultCredentials = false,
+                DateTimePrecision = DateTimePrecision.Milliseconds
             };
             if (host != null)
                 service.Url = new Uri(host);
@@ -45,7 +46,7 @@ namespace OpenCVR.Update.Email
 
         private static CvrEmail SearchAndFindEmailIfAny(DateTime lastItemReceivedTime, ExchangeService service)
         {
-            ItemView view = new ItemView(1);
+            ItemView view = new ItemView(10);
             view.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
             FindItemsResults<Item> findResults = service.FindItems(WellKnownFolderName.Inbox, GenerateSearchFilters(lastItemReceivedTime), view);
             logger.Info("Found " + findResults.Items.Count + " emails");

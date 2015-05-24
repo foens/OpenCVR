@@ -29,11 +29,11 @@ namespace OpenCVR.Update
             this.parser = parser;
         }
 
-        public void TryUpdate()
+        public bool TryUpdate()
         {
-            var email = emailService.GetEarliestEmailNotProccessed(new DateTime());
+            var email = emailService.GetEarliestEmailNotProccessed(persistence.GetLastProcessedEmailReceivedTime());
             if (email == null)
-                return;
+                return false;
 
             logger.Info("Updates are available. Starting update process.");
             var zipfileUrl = extractor.ParseOutZipfileUrl(email.Text);
@@ -42,7 +42,9 @@ namespace OpenCVR.Update
             var localZipFilePath = httpService.Download(zipfileUrl, new NetworkCredential(loginId, cvrFetchPassword));
             var cvrEntries = parser.Parse(localZipFilePath);
             persistence.InsertCompanies(cvrEntries.Companies);
+            persistence.SetLastProcessedEmailReceivedTime(email.DateTimeReceived);
             logger.Info("Update process complete.");
+            return true;
         }
     }
 }

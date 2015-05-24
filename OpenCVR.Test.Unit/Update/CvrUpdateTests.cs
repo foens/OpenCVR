@@ -37,17 +37,21 @@ namespace OpenCVR.Test.Unit.Update
         [Test]
         public void TestFetchingEmailWhichReturnsNullDoesNoting()
         {
-            emailService.Setup(e => e.GetEarliestEmailNotProccessed(new DateTime())).Returns((CvrEmail) null);
+            var date = DateTime.Now;
+            persistence.Setup(e => e.GetLastProcessedEmailReceivedTime()).Returns(date);
+            emailService.Setup(e => e.GetEarliestEmailNotProccessed(date)).Returns((CvrEmail) null);
 
-            cvrUpdater.TryUpdate();
+            var updateApplied = cvrUpdater.TryUpdate();
 
-            emailService.Verify(e => e.GetEarliestEmailNotProccessed(new DateTime()));
+            emailService.Verify(e => e.GetEarliestEmailNotProccessed(date));
+            Assert.IsFalse(updateApplied);
         }
 
         [Test]
         public void TestWhenCvrEmailReturnedTheCvrDatabaseIsUpadeted()
         {
-            CvrEmail email = new CvrEmail("id", DateTime.Now, "foobar");
+            var date = DateTime.Now;
+            CvrEmail email = new CvrEmail("id", DateTime.Now.AddDays(-2), "foobar");
             var uri = new Uri("https://foobar.com/file.zip");
             const string loginId = "123533";
             const string path = "some download path";
@@ -56,15 +60,18 @@ namespace OpenCVR.Test.Unit.Update
             {
                 Companies = deltaCompanies
             };
-            emailService.Setup(e => e.GetEarliestEmailNotProccessed(new DateTime())).Returns(email);
+            persistence.Setup(e => e.GetLastProcessedEmailReceivedTime()).Returns(date);
+            emailService.Setup(e => e.GetEarliestEmailNotProccessed(date)).Returns(email);
             emailExtractor.Setup(e => e.ParseOutZipfileUrl(email.Text)).Returns(uri);
             emailExtractor.Setup(e => e.ParseOutLoginId(email.Text)).Returns(loginId);
             httpService.Setup(e => e.Download(uri, It.Is<NetworkCredential>(nw => nw.UserName.Equals(loginId) && nw.Password.Equals(Password)))).Returns(path);
             parser.Setup(e => e.Parse(path)).Returns(cvrEntries);
 
-            cvrUpdater.TryUpdate();
-            
+            var updateApplied = cvrUpdater.TryUpdate();
+
             persistence.Verify(e => e.InsertCompanies(cvrEntries.Companies));
+            persistence.Verify(e => e.SetLastProcessedEmailReceivedTime(email.DateTimeReceived));
+            Assert.IsTrue(updateApplied);
         }
     }
 }

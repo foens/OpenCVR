@@ -6,8 +6,12 @@ using OpenCVR.Update.Email;
 using OpenCVR.Update.Http;
 using OpenCVR.Update.Parse;
 using Microsoft.Exchange.WebServices.Data;
-using Mono.Data.Sqlite;
 using Ninject.Modules;
+#if (__MonoCS__)
+using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
+#else
+using System.Data.SQLite;
+#endif
 
 namespace OpenCVR
 {
@@ -48,8 +52,8 @@ namespace OpenCVR
 
         private void BindPersistence()
         {
-            Bind<SqliteConnection>().ToConstructor(c => new SqliteConnection(c.Inject<string>()));
-            Bind<string>().ToConstant("Data Source=cvr.sqlite;Version=3;").WhenInjectedInto<SqliteConnection>();
+            Bind<SQLiteConnection>().ToConstructor(c => new SQLiteConnection(c.Inject<string>()));
+            Bind<string>().ToConstant("Data Source=cvr.sqlite;Version=3;").WhenInjectedInto<SQLiteConnection>();
             Bind<ICvrPersistence>().To<CvrPersistence>();
         }
     }

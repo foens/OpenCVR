@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using OpenCVR.Model;
 
 namespace OpenCVR.Persistence
@@ -7,5 +8,7 @@ namespace OpenCVR.Persistence
     {
         void UpgradeSchemaIfRequired();
         void InsertCompanies(IEnumerable<Company> companies);
+        DateTime GetLastProcessedEmailReceivedTime();
+        void SetLastProcessedEmailReceivedTime(DateTime updateTime);
     }
 }

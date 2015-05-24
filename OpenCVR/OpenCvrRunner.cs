@@ -44,13 +44,22 @@ namespace OpenCVR
             {
                 while (true)
                 {
-                    updater.TryUpdate();
+                    UpdateUntilNoNewUpdatesAreAvailable();
                     Thread.Sleep(1000*60*60);
                 }
             }
             catch (ThreadInterruptedException)
             {
                 // Stop running
+            }
+        }
+
+        private void UpdateUntilNoNewUpdatesAreAvailable()
+        {
+            while (true)
+            {
+                if (!updater.TryUpdate())
+                    break;
             }
         }
 

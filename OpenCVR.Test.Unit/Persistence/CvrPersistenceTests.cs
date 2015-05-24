@@ -62,37 +62,37 @@ namespace OpenCVR.Test.Unit.Persistence
         }
 
         [Test]
-        public void TestCanQueryLastUpdateTimeWithDefaultValueOf0()
+        public void TestCanQueryTimeWithDefaultValueOf0()
         {
             persistence.UpgradeSchemaIfRequired();
 
-            var lastUpdateTime = persistence.GetLastUpdateTime();
+            var lastUpdateTime = persistence.GetLastProcessedEmailReceivedTime();
 
             Assert.AreEqual(DateTime.MinValue, lastUpdateTime);
         }
 
         [Test]
-        public void TestCanInsertLastUpdateTime()
+        public void TestCanInsertTime()
         {
             persistence.UpgradeSchemaIfRequired();
             var insertedLastUpdateTme = DateTime.Now;
 
-            persistence.SetLastUpdateTime(insertedLastUpdateTme);
-            var lastUpdateTime = persistence.GetLastUpdateTime();
+            persistence.SetLastProcessedEmailReceivedTime(insertedLastUpdateTme);
+            var lastUpdateTime = persistence.GetLastProcessedEmailReceivedTime();
 
             Assert.AreEqual(insertedLastUpdateTme, lastUpdateTime);
         }
 
         [Test]
-        public void TestCanUpdateLastUpdateTimeMultipleTimes()
+        public void TestCanUpdateTimeMultipleTimes()
         {
             persistence.UpgradeSchemaIfRequired();
             var firstInsertDate = DateTime.Now;
             var secondInsertDate = firstInsertDate.AddDays(12);
 
-            persistence.SetLastUpdateTime(firstInsertDate);
-            persistence.SetLastUpdateTime(secondInsertDate);
-            var lastUpdateTime = persistence.GetLastUpdateTime();
+            persistence.SetLastProcessedEmailReceivedTime(firstInsertDate);
+            persistence.SetLastProcessedEmailReceivedTime(secondInsertDate);
+            var lastUpdateTime = persistence.GetLastProcessedEmailReceivedTime();
 
             Assert.AreEqual(secondInsertDate, lastUpdateTime);
         }
