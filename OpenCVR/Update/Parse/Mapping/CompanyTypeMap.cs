@@ -1,5 +1,6 @@
 using CsvHelper.Configuration;
 using OpenCVR.Model;
+using OpenCVR.Update.Parse.Mapping.Convert;
 
 namespace OpenCVR.Update.Parse.Mapping
 {
@@ -7,7 +8,7 @@ namespace OpenCVR.Update.Parse.Mapping
     {
         public CompanyTypeMap()
         {
-            Map(m => m.ValidFrom).ConvertUsing(r => ConvertUtil.ConvertDate(r.GetField("virksomhedsform_gyldigFra")));
+            Map(m => m.ValidFrom).Name("virksomhedsform_gyldigFra").TypeConverter<CvrDateConverter>();
             Map(m => m.Code).Name("virksomhedsform_kode");
             Map(m => m.Text).Name("virksomhedsform_tekst").TypeConverter<NullStringConverter>();
             Map(m => m.ResponsibleDataSupplier).Name("virksomhedsform_ansvarligDataleverandoer").TypeConverter<NullStringConverter>();

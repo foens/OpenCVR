@@ -1,8 +1,8 @@
 using CsvHelper.TypeConversion;
 
-namespace OpenCVR.Update.Parse.Mapping
+namespace OpenCVR.Update.Parse.Mapping.Convert
 {
-    internal class NullStringConverter : StringConverter
+    class NullStringConverter : StringConverter
     {
         public override object ConvertFromString(TypeConverterOptions options, string text)
         {

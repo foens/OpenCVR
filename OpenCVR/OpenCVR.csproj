@@ -116,11 +116,13 @@
     <Compile Include="Update\Http\IHttpService.cs" />
     <Compile Include="Update\ICvrUpdater.cs" />
     <Compile Include="Update\Parse\Mapping\AddressMap.cs" />
+    <Compile Include="Update\Parse\Mapping\Convert\LongArrayConverter.cs" />
+    <Compile Include="Update\Parse\Mapping\Convert\CvrDateConverter.cs" />
+    <Compile Include="Update\Parse\Mapping\Convert\ModificationStatusConverter.cs" />
     <Compile Include="Update\Parse\Mapping\CompanyTypeMap.cs" />
     <Compile Include="Update\Parse\Mapping\ContactDetailMap.cs" />
-    <Compile Include="Update\Parse\Mapping\ConvertUtil.cs" />
     <Compile Include="Update\Parse\Mapping\IndustryMap.cs" />
-    <Compile Include="Update\Parse\Mapping\NullStringConverter.cs" />
+    <Compile Include="Update\Parse\Mapping\Convert\NullStringConverter.cs" />
     <Compile Include="Update\Parse\CompanyParser.cs" />
     <Compile Include="Update\Parse\CvrEntries.cs" />
     <Compile Include="Update\Parse\Mapping\DeltaCompanyMap.cs" />

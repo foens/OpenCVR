@@ -1,6 +1,7 @@
 ﻿using System;
 using CsvHelper.Configuration;
 using OpenCVR.Model;
+using OpenCVR.Update.Parse.Mapping.Convert;
 
 namespace OpenCVR.Update.Parse.Mapping
 {
@@ -8,13 +9,14 @@ namespace OpenCVR.Update.Parse.Mapping
     {
         public DeltaCompanyMap()
         {
-            Map(m => m.ModificationStatus).ConvertUsing(r => ConvertModificationStatus(r.GetField("modifikationsstatus")));
+            Map(m => m.ModificationStatus).Name("modifikationsstatus").TypeConverter<ModificationStatusConverter>();
             Map(m => m.VatNumber).Name("cvrnr");
-            Map(m => m.StartDate).ConvertUsing(r => ConvertUtil.ConvertDate(r.GetField("livsforloeb_startdato")));
-            Map(m => m.EndDate).ConvertUsing(r => ConvertUtil.ConvertDate(r.GetField("livsforloeb_ophoersdato")));
-            Map(m => m.UpdatedDate).ConvertUsing(r => ConvertUtil.ConvertDate(r.GetField("ajourfoeringsdato")));
+            Map(m => m.StartDate).Name("livsforloeb_startdato").TypeConverter<CvrDateConverter>();
+            Map(m => m.StartDate).Name("livsforloeb_startdato").TypeConverter<CvrDateConverter>();
+            Map(m => m.EndDate).Name("livsforloeb_ophoersdato").TypeConverter<CvrDateConverter>();
+            Map(m => m.UpdatedDate).Name("ajourfoeringsdato").TypeConverter<CvrDateConverter>();
             Map(m => m.OptedOutForUnsolicictedAdvertising).Name("reklamebeskyttelse");
-            Map(m => m.NameValidFrom).ConvertUsing(r => ConvertUtil.ConvertDate(r.GetField("navn_gyldigFra")));
+            Map(m => m.NameValidFrom).Name("navn_gyldigFra").TypeConverter<CvrDateConverter>();
             Map(m => m.Name).Name("navn_tekst");
             References<AddressMap>(m => m.LocationAddress, "beliggenhedsadresse");
             References<AddressMap>(m => m.PostalAddress, "postadresse");
@@ -23,33 +25,8 @@ namespace OpenCVR.Update.Parse.Mapping
             References<ContactDetailMap>(m => m.TelephoneContactDetails, "telefonnummer");
             References<ContactDetailMap>(m => m.FaxContactDetails, "telefax");
             References<ContactDetailMap>(m => m.EmailContactDetails, "email");
-            Map(m => m.ProductionUnits).ConvertUsing(r => ConvertLongArray(r.GetField("produktionsenheder")));
-            Map(m => m.Participants).ConvertUsing(r => ConvertLongArray(r.GetField("deltagere")));
-        }
-
-        private long[] ConvertLongArray(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return new long[0];
-            var presumeablyLongs = value.Split(',');
-            var r = new long[presumeablyLongs.Length];
-            for (int i = 0; i < presumeablyLongs.Length; i++)
-                r[i] = long.Parse(presumeablyLongs[i]);
-            return r;
-        }
-
-        private static ModificationStatus ConvertModificationStatus(string value)
-        {
-            switch (value)
-            {
-                case "ny":
-                    return ModificationStatus.New;
-                case "fjernet":
-                    return ModificationStatus.Removed;
-                case "modificeret":
-                    return ModificationStatus.Modified;
-            }
-            throw new Exception("Unknown ModificationStatus: " + value);
+            Map(m => m.ProductionUnits).Name("produktionsenheder").TypeConverter<LongArrayConverter>();
+            Map(m => m.Participants).Name("deltagere").TypeConverter<LongArrayConverter>();
         }
     }
 }

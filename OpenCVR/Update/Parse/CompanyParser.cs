@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
@@ -20,6 +21,7 @@ namespace OpenCVR.Update.Parse
             var csv = new CsvReader(s);
             csv.Configuration.RegisterClassMap(new DeltaCompanyMap());
             csv.Configuration.TrimFields = true;
+            csv.Configuration.CultureInfo = CultureInfo.GetCultureInfo("da-DK");
             var deltaCompanies = csv.GetRecords<DeltaCompany>().ToList();
             logger.Info("Done reading DeltaCompanies. There were {0:n0} companies", deltaCompanies.Count);
             DateTime end = DateTime.Now;
