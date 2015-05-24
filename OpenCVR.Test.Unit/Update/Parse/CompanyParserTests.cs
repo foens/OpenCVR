@@ -211,7 +211,7 @@ namespace OpenCVR.Test.Unit.Update.Parse
         }
 
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore]
+        [Ignore]
         public void TestCanReadCarIndustryCodes()
         {
             
