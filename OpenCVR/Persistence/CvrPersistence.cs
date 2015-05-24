@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using OpenCVR.Update.Parse;
+#if (linux)
+using SQLCommand = Mono.Data.Sqlite.SqliteCommand;
+using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
+#else
+using System.Data.SQLite;
+#endif
 
 namespace OpenCVR.Persistence
 {
