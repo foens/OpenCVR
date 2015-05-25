@@ -166,5 +166,61 @@ namespace OpenCVR.Test.Unit.Persistence
 
             Assert.AreEqual(c, returnedCompany);
         }
+
+        [Test]
+        public void TestCanSearchByPrefixOfName()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = CreateCompany();
+            persistence.InsertOrReplaceCompany(c);
+            if(c.Name.Length < 10)
+                throw new Exception("This test requires a longer length name");
+
+            var returnedCompany = persistence.Search(c.Name.Substring(0, 5));
+
+            Assert.AreEqual(c, returnedCompany);
+        }
+
+        [Test]
+        public void TestSqlWildcardsInSearchStringIsEscaped()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = CreateCompany();
+            persistence.InsertOrReplaceCompany(c);
+            if (c.Name.Length < 10)
+                throw new Exception("This test requires a longer length name");
+            if(c.Name[6] == '%')
+                throw new Exception("Must not be %");
+
+            var returnedCompany = persistence.Search(c.Name.Substring(0, 5) + "%");
+
+            Assert.IsNull(returnedCompany);
+        }
+
+        [Test]
+        public void TestCanFindCompanyWithBackslashInName()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = CreateCompany();
+            c.Name = @"\foo";
+            persistence.InsertOrReplaceCompany(c);
+
+            var returnedCompany = persistence.Search(@"\");
+
+            Assert.AreEqual(c, returnedCompany);
+        }
+
+        [Ignore]
+        [Test]
+        public void TestCanSearchByProductionUnitNumber()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = CreateCompany();
+            persistence.InsertOrReplaceCompany(c);
+
+            var returnedCompany = persistence.Search(c.ProductionUnits[0].ToString());
+
+            Assert.AreEqual(c, returnedCompany);
+        }
     }
 }

@@ -164,10 +164,12 @@ namespace OpenCVR.Persistence
 
         public Company Search(string search)
         {
-            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat = @vat OR Name = @name", new Dictionary<string, object>
+            const char escapeCharacter = '\\';
+            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat = @vat OR Name LIKE @name ESCAPE @escape", new Dictionary<string, object>
             {
                 {"@vat", search},
-                {"@name", search}
+                {"@name", EscapeLikeValue(search, escapeCharacter) + "%"},
+                {"@escape", escapeCharacter.ToString() }
             }))
             {
                 if (r.HasRows && r.Read())
@@ -176,6 +178,15 @@ namespace OpenCVR.Persistence
                 }
                 return null;
             }
+        }
+
+        private static string EscapeLikeValue(string like, char escapeCharacter)
+        {
+            return like.Replace("" + escapeCharacter, "" + escapeCharacter + escapeCharacter)
+                .Replace("%", escapeCharacter + "%")
+                .Replace("_", escapeCharacter + "_")
+                .Replace("[", escapeCharacter + "[")
+                .Replace("]", escapeCharacter + "]");
         }
     }
 }
