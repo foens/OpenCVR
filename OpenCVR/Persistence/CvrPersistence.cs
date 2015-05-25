@@ -44,6 +44,10 @@ namespace OpenCVR.Persistence
                         "Key text PRIMARY KEY NOT NULL," +
                             "Value text" +
                         ");");
+
+                    /*
+                    CREATE INDEX NameLikeIndex ON Company (NAME COLLATE NOCASE)
+                    */
                     SetUserVersion(1);
                 }
                 transaction.Commit();
