@@ -3,6 +3,7 @@ using System.Collections.Generic;
 #if (__MonoCS__)
 using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
 using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
+using SQLiteDataReader = Mono.Data.Sqlite.SqliteDataReader;
 #else
 using System.Data.SQLite;
 #endif
@@ -51,6 +52,14 @@ namespace OpenCVR.Persistence
                 }
             }
             return command;
+        }
+
+        public static string GetNullableString(SQLiteDataReader reader, string key)
+        {
+            int index = reader.GetOrdinal(key);
+            if (reader.IsDBNull(index))
+                return null;
+            return reader.GetString(index);
         }
     }
 }

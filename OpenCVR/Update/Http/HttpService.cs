@@ -7,7 +7,7 @@ namespace OpenCVR.Update.Http
 {
     internal class HttpService : IHttpService
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly string downloadFolder;
 
@@ -21,12 +21,12 @@ namespace OpenCVR.Update.Http
             var outputPath = Path.Combine(downloadFolder, Path.GetFileName(url.LocalPath));
             if (File.Exists(outputPath))
             {
-                logger.Info("Skipping download since local file already exists {0}", outputPath);
+                Logger.Info("Skipping download since local file already exists {0}", outputPath);
                 return outputPath;
             }
-            logger.Info("Downloading file {0}", url);
+            Logger.Info("Downloading file {0}", url);
             DownloadFileToTemporaryLocationAndMoveWhenComplete(url, authenticationCredentials, outputPath);
-            logger.Info("File downloaded to {0}", outputPath);
+            Logger.Info("File downloaded to {0}", outputPath);
             return outputPath;
         }
 

@@ -35,7 +35,8 @@ namespace OpenCVR.Persistence
                             "EndDate int, " +
                             "UpdatedDate int, " +
                             "OptedOutForUnsolicictedAdvertising int, " +
-                            "NameValidFrom int" +
+                            "NameValidFrom int, " +
+                            "Name text" +
                         ");");
 
                     ExecuteNonQuery("CREATE TABLE KeyValue" +
@@ -90,7 +91,8 @@ namespace OpenCVR.Persistence
                         EndDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("EndDate"))),
                         UpdatedDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("UpdatedDate"))),
                         OptedOutForUnsolicictedAdvertising = 1 == (int)r["OptedOutForUnsolicictedAdvertising"],
-                        NameValidFrom = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("nameValidFrom")))
+                        NameValidFrom = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("nameValidFrom"))),
+                        Name = PersistenceUtil.GetNullableString(r, "Name")
                     };
                 }
                 throw new Exception();
@@ -129,8 +131,8 @@ namespace OpenCVR.Persistence
         public void InsertOrReplaceCompany(Company c)
         {
             ExecuteNonQuery("INSERT OR REPLACE INTO Company " +
-                                   "(Vat, StartDate, EndDate, UpdatedDate, OptedOutForUnsolicictedAdvertising, NameValidFrom) VALUES " +
-                                   "(@vat,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom)", new Dictionary<string, object>
+                                   "(Vat, StartDate, EndDate, UpdatedDate, OptedOutForUnsolicictedAdvertising, NameValidFrom, Name) VALUES " +
+                                   "(@vat,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom,@name)", new Dictionary<string, object>
                     {
                         {"@vat", c.VatNumber },
                         {"@startDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.StartDate)},
@@ -138,6 +140,7 @@ namespace OpenCVR.Persistence
                         {"@updateDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.UpdatedDate)},
                         {"@OptedOutForUnsolicictedAdvertising",  c.OptedOutForUnsolicictedAdvertising ? 1 : 0},
                         {"@nameValidFrom",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.NameValidFrom)},
+                        {"@name",  c.Name},
                     });
         }
 

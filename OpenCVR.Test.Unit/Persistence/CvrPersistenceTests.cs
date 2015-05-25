@@ -51,9 +51,10 @@ namespace OpenCVR.Test.Unit.Persistence
                 VatNumber = 123,
                 StartDate = DateTime.Today,
                 EndDate = DateTime.Today,
-                NameValidFrom = DateTime.Today,
+                UpdatedDate = DateTime.Today,
                 OptedOutForUnsolicictedAdvertising = true,
-                UpdatedDate = DateTime.Today
+                NameValidFrom = DateTime.Today,
+                Name = "test company"
             };
 
             persistence.InsertOrReplaceCompany(c);
@@ -70,9 +71,9 @@ namespace OpenCVR.Test.Unit.Persistence
                 VatNumber = 123,
                 StartDate = DateTime.Today,
                 EndDate = DateTime.Today,
-                NameValidFrom = DateTime.Today,
+                UpdatedDate = DateTime.Today,
                 OptedOutForUnsolicictedAdvertising = true,
-                UpdatedDate = DateTime.Today
+                NameValidFrom = DateTime.Today
             };
             persistence.InsertOrReplaceCompany(c);
             c.OptedOutForUnsolicictedAdvertising = false;
@@ -91,9 +92,9 @@ namespace OpenCVR.Test.Unit.Persistence
                 VatNumber = 123,
                 StartDate = DateTime.Today,
                 EndDate = DateTime.Today,
-                NameValidFrom = DateTime.Today,
+                UpdatedDate = DateTime.Today,
                 OptedOutForUnsolicictedAdvertising = true,
-                UpdatedDate = DateTime.Today
+                NameValidFrom = DateTime.Today
             };
             persistence.InsertOrReplaceCompany(c);
 
