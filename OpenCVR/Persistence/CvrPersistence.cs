@@ -24,34 +24,28 @@ namespace OpenCVR.Persistence
 
         public void UpgradeSchemaIfRequired()
         {
-            var transaction = connection.BeginTransaction();
-            try
+            using (var transaction = connection.BeginTransaction())
             {
                 if (GetUserVersion() == 0)
                 {
                     ExecuteNonQuery("CREATE TABLE Company" +
-                                   "(" +
+                                    "(" +
                         "Vat INT PRIMARY KEY NOT NULL," +
-                         "StartDate int, " +
-                         "EndDate int, " +
-                         "UpdatedDate int, " +
-                         "OptedOutForUnsolicictedAdvertising int, " +
-                         "NameValidFrom int" +
+                            "StartDate int, " +
+                            "EndDate int, " +
+                            "UpdatedDate int, " +
+                            "OptedOutForUnsolicictedAdvertising int, " +
+                            "NameValidFrom int" +
                         ");");
 
                     ExecuteNonQuery("CREATE TABLE KeyValue" +
-                                   "(" +
+                                    "(" +
                         "Key text PRIMARY KEY NOT NULL," +
-                         "Value text" +
+                            "Value text" +
                         ");");
                     SetUserVersion(1);
                 }
                 transaction.Commit();
-                transaction = null;
-            }
-            finally
-            {
-                transaction?.Rollback();
             }
         }
 
@@ -82,9 +76,8 @@ namespace OpenCVR.Persistence
 
         public void InsertCompanies(IEnumerable<Company> companies)
         {
-            var transaction = connection.BeginTransaction();
-            try
-            {
+            using (var transaction = connection.BeginTransaction())
+            { 
                 foreach (var company in companies)
                 {
                     ExecuteNonQuery("INSERT INTO Company " +
@@ -100,11 +93,6 @@ namespace OpenCVR.Persistence
                     });
                 }
                 transaction.Commit();
-                transaction = null;
-            }
-            finally
-            {
-                transaction?.Rollback();
             }
         }
 
