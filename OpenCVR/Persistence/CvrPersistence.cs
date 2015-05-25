@@ -88,19 +88,25 @@ namespace OpenCVR.Persistence
             {
                 if (r.HasRows && r.Read())
                 {
-                    return new Company
-                    {
-                        VatNumber = (int) r["Vat"],
-                        StartDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("StartDate"))),
-                        EndDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("EndDate"))),
-                        UpdatedDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("UpdatedDate"))),
-                        OptedOutForUnsolicictedAdvertising = 1 == (int)r["OptedOutForUnsolicictedAdvertising"],
-                        NameValidFrom = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("nameValidFrom"))),
-                        Name = PersistenceUtil.GetNullableString(r, "Name")
-                    };
+                    return ReaderToCompany(r);
                 }
                 throw new Exception();
             }
+        }
+
+        private static Company ReaderToCompany(SQLiteDataReader r)
+        {
+            return new Company
+            {
+                VatNumber = (int) r["Vat"],
+                StartDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("StartDate"))),
+                EndDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("EndDate"))),
+                UpdatedDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("UpdatedDate"))),
+                OptedOutForUnsolicictedAdvertising = 1 == (int) r["OptedOutForUnsolicictedAdvertising"],
+                NameValidFrom =
+                    PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("nameValidFrom"))),
+                Name = PersistenceUtil.GetNullableString(r, "Name")
+            };
         }
 
         public DateTime GetLastProcessedEmailReceivedTime()
@@ -154,6 +160,22 @@ namespace OpenCVR.Persistence
                     {
                         {"@vat", vatNumber }
                     });
+        }
+
+        public Company Search(string search)
+        {
+            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat = @vat OR Name = @name", new Dictionary<string, object>
+            {
+                {"@vat", search},
+                {"@name", search}
+            }))
+            {
+                if (r.HasRows && r.Read())
+                {
+                    return ReaderToCompany(r);
+                }
+                return null;
+            }
         }
     }
 }

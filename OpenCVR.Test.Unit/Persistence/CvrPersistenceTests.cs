@@ -15,7 +15,7 @@ namespace OpenCVR.Test.Unit.Persistence
     public class CvrPersistenceTests
     {
         private SQLiteConnection connection;
-        private CvrPersistence persistence;
+        private ICvrPersistence persistence;
 
         [SetUp]
         public void Setup()
@@ -46,16 +46,7 @@ namespace OpenCVR.Test.Unit.Persistence
         public void TestCanInsertNewCompany()
         {
             persistence.UpgradeSchemaIfRequired();
-            var c = new Company
-            {
-                VatNumber = 123,
-                StartDate = DateTime.Today,
-                EndDate = DateTime.Today,
-                UpdatedDate = DateTime.Today,
-                OptedOutForUnsolicictedAdvertising = true,
-                NameValidFrom = DateTime.Today,
-                Name = "test company"
-            };
+            var c = CreateCompany();
 
             persistence.InsertOrReplaceCompany(c);
 
@@ -66,15 +57,7 @@ namespace OpenCVR.Test.Unit.Persistence
         public void TestCanUpdateExistingCompany()
         {
             persistence.UpgradeSchemaIfRequired();
-            var c = new Company
-            {
-                VatNumber = 123,
-                StartDate = DateTime.Today,
-                EndDate = DateTime.Today,
-                UpdatedDate = DateTime.Today,
-                OptedOutForUnsolicictedAdvertising = true,
-                NameValidFrom = DateTime.Today
-            };
+            var c = CreateCompany();
             persistence.InsertOrReplaceCompany(c);
             c.OptedOutForUnsolicictedAdvertising = false;
 
@@ -87,15 +70,7 @@ namespace OpenCVR.Test.Unit.Persistence
         public void TestCanDeleteExistingCompany()
         {
             persistence.UpgradeSchemaIfRequired();
-            var c = new Company
-            {
-                VatNumber = 123,
-                StartDate = DateTime.Today,
-                EndDate = DateTime.Today,
-                UpdatedDate = DateTime.Today,
-                OptedOutForUnsolicictedAdvertising = true,
-                NameValidFrom = DateTime.Today
-            };
+            var c = CreateCompany();
             persistence.InsertOrReplaceCompany(c);
 
             persistence.DeleteCompany(c.VatNumber);
@@ -109,6 +84,21 @@ namespace OpenCVR.Test.Unit.Persistence
             {
                 // Expected
             }
+        }
+
+        private static Company CreateCompany()
+        {
+            var c = new Company
+            {
+                VatNumber = 123,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today,
+                UpdatedDate = DateTime.Today,
+                OptedOutForUnsolicictedAdvertising = true,
+                NameValidFrom = DateTime.Today,
+                Name = "Foobar baz"
+            };
+            return c;
         }
 
         [Test]
@@ -151,6 +141,30 @@ namespace OpenCVR.Test.Unit.Persistence
         public void TestStartTransactionReturnsAnInstance()
         {
             Assert.NotNull(persistence.StartTransaction());
+        }
+
+        [Test]
+        public void TestCanSearchByFullVatNumber()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = CreateCompany();
+            persistence.InsertOrReplaceCompany(c);
+
+            var returnedCompany = persistence.Search(c.VatNumber.ToString());
+
+            Assert.AreEqual(c, returnedCompany);
+        }
+
+        [Test]
+        public void TestCanSearchByFullName()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = CreateCompany();
+            persistence.InsertOrReplaceCompany(c);
+
+            var returnedCompany = persistence.Search(c.Name);
+
+            Assert.AreEqual(c, returnedCompany);
         }
     }
 }

@@ -12,5 +12,7 @@ namespace OpenCVR.Persistence
         IPersistenceTransaction StartTransaction();
         void InsertOrReplaceCompany(Company c);
         void DeleteCompany(int vatNumber);
+        Company FindWithVat(int vatNumber);
+        Company Search(string search);
     }
 }
