@@ -56,9 +56,58 @@ namespace OpenCVR.Test.Unit.Persistence
                 UpdatedDate = DateTime.Today
             };
 
-            persistence.InsertCompanies(new[]{ c });
+            persistence.InsertOrReplaceCompany(c);
 
             Assert.AreEqual(c, persistence.FindWithVat(c.VatNumber));
+        }
+
+        [Test]
+        public void TestCanUpdateExistingCompany()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = new Company
+            {
+                VatNumber = 123,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today,
+                NameValidFrom = DateTime.Today,
+                OptedOutForUnsolicictedAdvertising = true,
+                UpdatedDate = DateTime.Today
+            };
+            persistence.InsertOrReplaceCompany(c);
+            c.OptedOutForUnsolicictedAdvertising = false;
+
+            persistence.InsertOrReplaceCompany(c);
+
+            Assert.AreEqual(c, persistence.FindWithVat(c.VatNumber));
+        }
+
+        [Test]
+        public void TestCanDeleteExistingCompany()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = new Company
+            {
+                VatNumber = 123,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today,
+                NameValidFrom = DateTime.Today,
+                OptedOutForUnsolicictedAdvertising = true,
+                UpdatedDate = DateTime.Today
+            };
+            persistence.InsertOrReplaceCompany(c);
+
+            persistence.DeleteCompany(c.VatNumber);
+
+            try
+            {
+                persistence.FindWithVat(c.VatNumber);
+                Assert.Fail("Expected above query to fail, since the company was deleted");
+            }
+            catch (Exception)
+            {
+                // Expected
+            }
         }
 
         [Test]
@@ -95,6 +144,12 @@ namespace OpenCVR.Test.Unit.Persistence
             var lastUpdateTime = persistence.GetLastProcessedEmailReceivedTime();
 
             Assert.AreEqual(secondInsertDate, lastUpdateTime);
+        }
+
+        [Test]
+        public void TestStartTransactionReturnsAnInstance()
+        {
+            Assert.NotNull(persistence.StartTransaction());
         }
     }
 }

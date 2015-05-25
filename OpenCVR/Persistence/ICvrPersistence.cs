@@ -7,8 +7,10 @@ namespace OpenCVR.Persistence
     interface ICvrPersistence
     {
         void UpgradeSchemaIfRequired();
-        void InsertCompanies(IEnumerable<Company> companies);
         DateTime GetLastProcessedEmailReceivedTime();
         void SetLastProcessedEmailReceivedTime(DateTime updateTime);
+        IPersistenceTransaction StartTransaction();
+        void InsertOrReplaceCompany(Company c);
+        void DeleteCompany(int vatNumber);
     }
 }

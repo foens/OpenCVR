@@ -74,28 +74,6 @@ namespace OpenCVR.Persistence
             return (long)command.ExecuteScalar();
         }
 
-        public void InsertCompanies(IEnumerable<Company> companies)
-        {
-            using (var transaction = connection.BeginTransaction())
-            { 
-                foreach (var company in companies)
-                {
-                    ExecuteNonQuery("INSERT INTO Company " +
-                                   "(Vat, StartDate, EndDate, UpdatedDate, OptedOutForUnsolicictedAdvertising, NameValidFrom) VALUES " +
-                                   "(@vat,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom)", new Dictionary<string, object>
-                    {
-                        {"@vat", company.VatNumber },
-                        {"@startDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(company.StartDate)},
-                        {"@endDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(company.EndDate)},
-                        {"@updateDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(company.UpdatedDate)},
-                        {"@OptedOutForUnsolicictedAdvertising",  company.OptedOutForUnsolicictedAdvertising ? 1 : 0},
-                        {"@nameValidFrom",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(company.NameValidFrom)},
-                    });
-                }
-                transaction.Commit();
-            }
-        }
-
         public Company FindWithVat(int vatNumber)
         {
             using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat = @vat", new Dictionary<string, object>
@@ -141,6 +119,34 @@ namespace OpenCVR.Persistence
                 {"@key", "lastProcessedEmailReceivedTime" },
                 {"@value", updateTime.ToString("O", CultureInfo.InvariantCulture) },
             });
+        }
+
+        public IPersistenceTransaction StartTransaction()
+        {
+            return new PersistenceTransaction(connection.BeginTransaction());
+        }
+
+        public void InsertOrReplaceCompany(Company c)
+        {
+            ExecuteNonQuery("INSERT OR REPLACE INTO Company " +
+                                   "(Vat, StartDate, EndDate, UpdatedDate, OptedOutForUnsolicictedAdvertising, NameValidFrom) VALUES " +
+                                   "(@vat,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom)", new Dictionary<string, object>
+                    {
+                        {"@vat", c.VatNumber },
+                        {"@startDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.StartDate)},
+                        {"@endDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.EndDate)},
+                        {"@updateDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.UpdatedDate)},
+                        {"@OptedOutForUnsolicictedAdvertising",  c.OptedOutForUnsolicictedAdvertising ? 1 : 0},
+                        {"@nameValidFrom",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.NameValidFrom)},
+                    });
+        }
+
+        public void DeleteCompany(int vatNumber)
+        {
+            ExecuteNonQuery("DELETE FROM Company WHERE Vat = @vat", new Dictionary<string, object>
+                    {
+                        {"@vat", vatNumber }
+                    });
         }
     }
 }

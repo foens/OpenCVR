@@ -1,6 +1,6 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using NLog;
+using OpenCVR.Model;
 using OpenCVR.Persistence;
 using OpenCVR.Update.Email;
 using OpenCVR.Update.Http;
@@ -10,7 +10,7 @@ namespace OpenCVR.Update
 {
     class CvrUpdater : ICvrUpdater
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly string cvrFetchPassword;
         private readonly ICvrPersistence persistence;
@@ -35,16 +35,40 @@ namespace OpenCVR.Update
             if (email == null)
                 return false;
 
-            logger.Info("Updates are available. Starting update process.");
+            Logger.Info("Updates are available. Starting update process.");
             var zipfileUrl = extractor.ParseOutZipfileUrl(email.Text);
             var loginId = extractor.ParseOutLoginId(email.Text);
 
             var localZipFilePath = httpService.Download(zipfileUrl, new NetworkCredential(loginId, cvrFetchPassword));
             var cvrEntries = parser.Parse(localZipFilePath);
-            persistence.InsertCompanies(cvrEntries.Companies);
+            UpdatePersistence(cvrEntries);
             persistence.SetLastProcessedEmailReceivedTime(email.DateTimeReceived);
-            logger.Info("Update process complete.");
+            Logger.Info("Update process complete.");
             return true;
+        }
+
+        private void UpdatePersistence(CvrEntries entries)
+        {
+            using (var t = persistence.StartTransaction())
+            {
+                foreach (var c in entries.Companies)
+                    ApplyCompanyChangesToPersistence(c);
+                t.Commit();
+            }
+        }
+
+        private void ApplyCompanyChangesToPersistence(DeltaCompany c)
+        {
+            switch (c.ModificationStatus)
+            {
+                case ModificationStatus.New:
+                case ModificationStatus.Modified:
+                    persistence.InsertOrReplaceCompany(c);
+                    break;
+                case ModificationStatus.Removed:
+                    persistence.DeleteCompany(c.VatNumber);
+                    break;
+            }
         }
     }
 }
