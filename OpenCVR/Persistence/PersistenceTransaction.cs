@@ -1,5 +1,8 @@
-using System;
+#if (__MonoCS__)
+using SQLiteTransaction = Mono.Data.Sqlite.SqliteTransaction;
+#else
 using System.Data.SQLite;
+#endif
 
 namespace OpenCVR.Persistence
 {
