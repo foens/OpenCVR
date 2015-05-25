@@ -30,7 +30,7 @@ namespace OpenCVR
             Bind<IEmailService>().To<EmailService>().WithConstructorArgument("host", "https://mail.cgm.com/EWS/Exchange.asmx");
 
             Bind<IHttpService>().To<HttpService>();
-            Bind<string>().ToConstant(Path.GetTempPath()).WhenInjectedInto<HttpService>();
+            Bind<string>().ToConstant(Path.Combine(Path.GetTempPath(), "OpenCVR", "DownloadCache")).WhenInjectedInto<HttpService>();
             BindEmailService();
         }
 

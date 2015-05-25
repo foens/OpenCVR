@@ -25,10 +25,24 @@ namespace OpenCVR.Update.Http
                 return outputPath;
             }
             logger.Info("Downloading file {0}", url);
-            var client = new WebClient {Credentials = authenticationCredentials};
-            client.DownloadFile(url, outputPath);
+            DownloadFileToTemporaryLocationAndMoveWhenComplete(url, authenticationCredentials, outputPath);
             logger.Info("File downloaded to {0}", outputPath);
             return outputPath;
+        }
+
+        private static void DownloadFileToTemporaryLocationAndMoveWhenComplete(Uri url, ICredentials authenticationCredentials,
+            string outputPath)
+        {
+            CreateDirectoryIfNotExists(new FileInfo(outputPath).Directory.FullName);
+            var client = new WebClient {Credentials = authenticationCredentials};
+            client.DownloadFile(url, outputPath + ".tmp");
+            File.Move(outputPath + ".tmp", outputPath);
+        }
+
+        private static void CreateDirectoryIfNotExists(string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
         }
     }
 }

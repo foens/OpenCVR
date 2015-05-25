@@ -64,12 +64,22 @@ namespace OpenCVR.Update.Email
 
         private static SearchFilter GenerateSearchFilters(DateTime lastItemReceivedTime)
         {
+            lastItemReceivedTime = FixBugWhereServerDoesNotCommunicateExactTime(lastItemReceivedTime);
             List<SearchFilter> filters = new List<SearchFilter>
             {
                 new SearchFilter.IsEqualTo(ItemSchema.Subject, "Udtræk fra cvr.dk er klar til download"),
                 new SearchFilter.IsGreaterThan(ItemSchema.DateTimeReceived, lastItemReceivedTime)
             };
             return new SearchFilter.SearchFilterCollection(LogicalOperator.And, filters);
+        }
+
+        private static DateTime FixBugWhereServerDoesNotCommunicateExactTime(DateTime dateTime)
+        {
+            // The EWS server does not return the exact email ReceiveTime. It only goes down to millseconds,
+            // but the server seems to store it with microseconds. Thus, searching for an item that is received
+            // later than the last received email, may actually return the same email.
+            // Fix by adding a millisecond.
+            return dateTime.AddMilliseconds(1);
         }
 
         private static bool RedirectionUrlValidationCallback(string redirectionUrl)
