@@ -38,16 +38,12 @@ namespace OpenCVR.Persistence
                             "NameValidFrom int, " +
                             "Name text" +
                         ");");
-
                     ExecuteNonQuery("CREATE TABLE KeyValue" +
                                     "(" +
                         "Key text PRIMARY KEY NOT NULL," +
                             "Value text" +
                         ");");
-
-                    /*
-                    CREATE INDEX NameLikeIndex ON Company (NAME COLLATE NOCASE)
-                    */
+                    ExecuteNonQuery("CREATE INDEX NameLikeIndex ON Company (NAME COLLATE NOCASE);");
                     SetUserVersion(1);
                 }
                 transaction.Commit();
