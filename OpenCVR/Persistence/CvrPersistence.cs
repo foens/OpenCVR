@@ -95,14 +95,22 @@ namespace OpenCVR.Persistence
             return new Company
             {
                 VatNumber = (int) r["Vat"],
-                StartDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("StartDate"))),
-                EndDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("EndDate"))),
-                UpdatedDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("UpdatedDate"))),
+                StartDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(GetLongOrNull(r, "StartDate")),
+                EndDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(GetLongOrNull(r, "EndDate")),
+                UpdatedDate = PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(GetLongOrNull(r, "UpdatedDate")),
                 OptedOutForUnsolicictedAdvertising = 1 == (int) r["OptedOutForUnsolicictedAdvertising"],
                 NameValidFrom =
-                    PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(r.GetInt64(r.GetOrdinal("nameValidFrom"))),
+                    PersistenceUtil.OptionalMillisecondsSinceEpochToDateTime(GetLongOrNull(r, "nameValidFrom")),
                 Name = PersistenceUtil.GetNullableString(r, "Name")
             };
+        }
+
+        private static long? GetLongOrNull(SQLiteDataReader r, string key)
+        {
+            var index = r.GetOrdinal(key);
+            if (r.IsDBNull(index))
+                return null;
+            return r.GetInt64(index);
         }
 
         public DateTime GetLastProcessedEmailReceivedTime()

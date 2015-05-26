@@ -54,6 +54,18 @@ namespace OpenCVR.Test.Unit.Persistence
         }
 
         [Test]
+        public void TestCanInsertNewCompanyWithNulls()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = CreateCompany();
+            c.NameValidFrom = null;
+
+            persistence.InsertOrReplaceCompany(c);
+
+            Assert.AreEqual(c, persistence.FindWithVat(c.VatNumber));
+        }
+
+        [Test]
         public void TestCanUpdateExistingCompany()
         {
             persistence.UpgradeSchemaIfRequired();
