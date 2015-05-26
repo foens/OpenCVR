@@ -73,7 +73,7 @@ namespace OpenCVR.Server
                     case "/api/1/search":
                         string search = context.Request.QueryString["q"];
                         var company = persistence.Search(search);
-                        streamWriter.Write(String.Format("{{VatNumber = {0}}}", company.VatNumber));
+                        streamWriter.Write("{VatNumber = " + company.VatNumber + "}");
                         break;
                     default:
                         context.Response.StatusCode = (int) HttpStatusCode.NotFound;
