@@ -161,9 +161,9 @@ namespace OpenCVR.Persistence
         public Company Search(string search)
         {
             const char escapeCharacter = '\\';
-            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat = @vat OR Name LIKE @name ESCAPE @escape", new Dictionary<string, object>
+            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat LIKE @vat ESCAPE @escape OR Name LIKE @name ESCAPE @escape", new Dictionary<string, object>
             {
-                {"@vat", search},
+                {"@vat", EscapeLikeValue(search, escapeCharacter) + "%"},
                 {"@name", EscapeLikeValue(search, escapeCharacter) + "%"},
                 {"@escape", escapeCharacter.ToString() }
             }))

@@ -90,7 +90,7 @@ namespace OpenCVR.Test.Unit.Persistence
         {
             var c = new Company
             {
-                VatNumber = 123,
+                VatNumber = 1234567890,
                 StartDate = DateTime.Today,
                 EndDate = DateTime.Today,
                 UpdatedDate = DateTime.Today,
@@ -206,6 +206,20 @@ namespace OpenCVR.Test.Unit.Persistence
             persistence.InsertOrReplaceCompany(c);
 
             var returnedCompany = persistence.Search(@"\");
+
+            Assert.AreEqual(c, returnedCompany);
+        }
+
+        [Test]
+        public void TestCanSearchByPrefixOfVat()
+        {
+            persistence.UpgradeSchemaIfRequired();
+            var c = CreateCompany();
+            persistence.InsertOrReplaceCompany(c);
+            if (c.VatNumber.ToString().Length < 10)
+                throw new Exception("This test requires a longer vat number");
+
+            var returnedCompany = persistence.Search(c.VatNumber.ToString().Substring(0, 4));
 
             Assert.AreEqual(c, returnedCompany);
         }
