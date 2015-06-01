@@ -8,8 +8,11 @@
 </div>
 
 <div class="row marketing">
-  <input type="text" placeholder="Search by CVR, name or p-number" ng-model="ctrl.search"></input>
-  <div ng-model="ctrl.output"></div>
+  <input type="text" placeholder="Search by CVR, name or p-number" ng-model="ctrl.search" ng-change="ctrl.performSearch()"></input>
+  <div>
+	<h1>{{ctrl.command}}<h2>
+	<pre>{{ctrl.output | json}}</pre>
+  </div>
   <h4>HTML5 Boilerplate</h4>
   <p>
     HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.

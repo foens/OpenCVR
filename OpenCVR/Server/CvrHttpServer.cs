@@ -2,6 +2,8 @@
 using System.IO;
 using System.Net;
 using System.Threading;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using NLog;
 using OpenCVR.Model;
 using OpenCVR.Persistence;
@@ -73,7 +75,9 @@ namespace OpenCVR.Server
                     case "/api/1/search":
                         string search = context.Request.QueryString["q"];
                         var company = persistence.Search(search);
-                        streamWriter.Write("{VatNumber = " + company.VatNumber + "}");
+                        var isoDateTimeConverter = new IsoDateTimeConverter();
+                        isoDateTimeConverter.DateTimeFormat = "dd-MM-yyyy";
+                        streamWriter.Write(JsonConvert.SerializeObject(company, isoDateTimeConverter));
                         break;
                     default:
                         context.Response.StatusCode = (int) HttpStatusCode.NotFound;

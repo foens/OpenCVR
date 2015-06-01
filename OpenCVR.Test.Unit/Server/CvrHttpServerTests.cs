@@ -34,11 +34,13 @@ namespace OpenCVR.Test.Unit.Server
         {
             Company c = new Company
             {
-                VatNumber = 1234
+                VatNumber = 1234,
+                Name = "Foobar"
             };
             persistence.Setup(e => e.Search("1234")).Returns(c);
             var response = GetResponseAndStopServer("api/1/search?q=1234");
-            Assert.AreEqual("{VatNumber = 1234}", response.Body);
+            StringAssert.Contains("\"VatNumber\":1234", response.Body);
+            StringAssert.Contains("\"Name\":\"Foobar\"", response.Body);
         }
 
         [Test]
@@ -46,11 +48,12 @@ namespace OpenCVR.Test.Unit.Server
         {
             var c = new Company
             {
-                VatNumber = 51234
+                VatNumber = 51234,
+                Name = "Test"
             };
             persistence.Setup(e => e.Search("51")).Returns(c);
             var response = GetResponseAndStopServer("api/1/search?q=51");
-            Assert.AreEqual("{VatNumber = 51234}", response.Body);
+            StringAssert.Contains("{\"VatNumber\":51234", response.Body);
         }
 
         [Test]

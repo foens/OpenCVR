@@ -2,18 +2,21 @@
 
 angular.module('openCvrApp')
   .controller('MainCtrl', function ($scope, $http) {
-    this.search = '';
-	this.output = '';
+    var self = this;
+	self.search = '';
+	self.command = '';
+	self.output = '';
 	
-	$scope.$watch('this.search',function(){
-    $http({
-        url: '/api/search',
+	self.performSearch = function() {
+      $http({
+        url: '/api/1/search',
         method: 'GET',
-        param: {
-            q: this.search
+        params: {
+            q: self.search
         }
-    }).success(function(response){
-        console.log(response);
-     });
-    });
+      }).success(function(response){
+        self.output = response;
+		self.command = 'wget http://opencvr.dk/api/1/search/' + self.search;
+      });
+  };
 });
