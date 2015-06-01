@@ -7,16 +7,23 @@ angular.module('openCvrApp')
 	self.command = '';
 	self.output = '';
 	
+	function canonicalize(url) {
+      var div = document.createElement('div');
+      div.innerHTML = '<a></a>';
+      div.firstChild.href = url; // Ensures that the href is properly escaped
+      div.innerHTML = div.innerHTML; // Run the current innerHTML back through the parser
+      return div.firstChild.href;
+    }
+	
 	self.performSearch = function() {
+	  var url = '/api/v1/search/' + encodeURIComponent(self.search);
+	  self.command = 'wget ' + decodeURIComponent(canonicalize(url));
       $http({
-        url: '/api/1/search',
-        method: 'GET',
-        params: {
-            q: self.search
-        }
+        url: url,
+        method: 'GET'
       }).success(function(response){
         self.output = response;
-		self.command = 'wget http://opencvr.dk/api/1/search/' + self.search;
+		
       });
   };
 });

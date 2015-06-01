@@ -5,7 +5,6 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NLog;
-using OpenCVR.Model;
 using OpenCVR.Persistence;
 
 namespace OpenCVR.Server
@@ -63,28 +62,25 @@ namespace OpenCVR.Server
 
         private void HandleRequest(HttpListenerContext context)
         {
+            DateTime start = DateTime.Now;
             Logger.Info("Request received for: {0}", context.Request.Url);
             var streamWriter = new StreamWriter(context.Response.OutputStream);
             try
             {
-                switch (context.Request.Url.LocalPath)
+                var localPath = context.Request.Url.LocalPath;
+                if (localPath.StartsWith("/api/v1/"))
                 {
-                    case "/":
-                        streamWriter.Write("Hello world");
-                        break;
-                    case "/api/1/search":
-                        string search = context.Request.QueryString["q"];
-                        var company = persistence.Search(search);
-                        var isoDateTimeConverter = new IsoDateTimeConverter();
-                        isoDateTimeConverter.DateTimeFormat = "dd-MM-yyyy";
-                        streamWriter.Write(JsonConvert.SerializeObject(company, isoDateTimeConverter));
-                        break;
-                    default:
-                        context.Response.StatusCode = (int) HttpStatusCode.NotFound;
-                        break;
+                    HandleApiCall(context, streamWriter);
                 }
-            }
-            catch (Exception e)
+                else if (localPath.Equals("/"))
+                {
+                    streamWriter.Write("Hello world");
+                }
+                else
+                {
+                    HandleRequestNotFound(context, streamWriter);
+                }
+            } catch(Exception e)
             {
                 Logger.Error("An exception was thrown when processing url: {0}. Exception: {1}", context.Request.Url, e);
             }
@@ -92,7 +88,33 @@ namespace OpenCVR.Server
             {
                 streamWriter.Close();
                 context.Response.Close();
+                DateTime end = DateTime.Now;
+                Logger.Info("Request handled in {0}ms", (end-start).TotalMilliseconds);
             }
+        }
+
+        private void HandleApiCall(HttpListenerContext context, StreamWriter streamWriter)
+        {
+            var localPath = context.Request.Url.LocalPath;
+            var apiV1Search = "/api/v1/search/";
+            if (localPath.StartsWith(apiV1Search))
+            {
+                string search = localPath.Substring(apiV1Search.Length);
+                var company = persistence.Search(search);
+                var isoDateTimeConverter = new IsoDateTimeConverter();
+                isoDateTimeConverter.DateTimeFormat = "dd-MM-yyyy";
+                streamWriter.Write(JsonConvert.SerializeObject(company, isoDateTimeConverter));
+            }
+            else
+            {
+                HandleRequestNotFound(context, streamWriter);
+            }
+        }
+
+        private void HandleRequestNotFound(HttpListenerContext context, StreamWriter streamWriter)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            streamWriter.Write("Error 404 - Not found");
         }
 
         public void Stop()

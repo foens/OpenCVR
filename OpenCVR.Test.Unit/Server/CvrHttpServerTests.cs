@@ -38,7 +38,7 @@ namespace OpenCVR.Test.Unit.Server
                 Name = "Foobar"
             };
             persistence.Setup(e => e.Search("1234")).Returns(c);
-            var response = GetResponseAndStopServer("api/1/search?q=1234");
+            var response = GetResponseAndStopServer("api/v1/search/1234");
             StringAssert.Contains("\"VatNumber\":1234", response.Body);
             StringAssert.Contains("\"Name\":\"Foobar\"", response.Body);
         }
@@ -52,14 +52,14 @@ namespace OpenCVR.Test.Unit.Server
                 Name = "Test"
             };
             persistence.Setup(e => e.Search("51")).Returns(c);
-            var response = GetResponseAndStopServer("api/1/search?q=51");
+            var response = GetResponseAndStopServer("api/v1/search/51");
             StringAssert.Contains("{\"VatNumber\":51234", response.Body);
         }
 
         [Test]
         public void TestNonExistentResourceReturns404()
         {
-            var response = GetResponseAndStopServer("api/1/lasmdf4g");
+            var response = GetResponseAndStopServer("api/v1/lasmdf4g");
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
 
