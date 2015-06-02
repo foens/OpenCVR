@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.IO;
 using System.Xml;
 
@@ -16,9 +17,24 @@ namespace OpenCVR
             return FindValue("CvrPassword");
         }
 
+        public static string ReadExchangeHost()
+        {
+            return FindValue("ExchangeServiceHost");
+        }
+
+        public static string ReadExchangeServiceUserName()
+        {
+            return FindValue("ExchangeServiceUserName");
+        }
+
+        public static string ReadEmailAddress()
+        {
+            return FindValue("EmailAddress");
+        }
+
         private static string FindValue(string key)
         {
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "CvrSecrets.xml");
+            var path = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["secretsLocation"]);
             var doc = new XmlDocument();
             doc.Load(path);
             var selectSingleNode = doc.SelectSingleNode("/CvrConfiguration/@" + key);
