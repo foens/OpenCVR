@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Threading;
+using MimeTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NLog;
@@ -13,15 +14,22 @@ namespace OpenCVR.Server
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private ICvrPersistence persistence;
+        private readonly ICvrPersistence persistence;
+        private readonly string staticServePath;
         private readonly HttpListener httpListener;
+
         private volatile bool isListening;
         private Thread serverThread;
 
-
-        public CvrHttpServer(ICvrPersistence persistence)
+        public CvrHttpServer(ICvrPersistence persistence, string staticServePath = null)
         {
             this.persistence = persistence;
+            if(staticServePath != null)
+            { 
+                this.staticServePath = Path.GetFullPath(staticServePath);
+                if(!Directory.Exists(this.staticServePath))
+                    throw new Exception("Serve directory must exist");
+            }
             httpListener = new HttpListener();
             SetupHttpListener();
         }
@@ -68,7 +76,10 @@ namespace OpenCVR.Server
             try
             {
                 var localPath = context.Request.Url.LocalPath;
-                if (localPath.StartsWith("/api/v1/"))
+                if (WasServedByStaticFile(context, localPath))
+                {
+                    
+                } else if (localPath.StartsWith("/api/v1/"))
                 {
                     HandleApiCall(context, streamWriter);
                 }
@@ -91,6 +102,31 @@ namespace OpenCVR.Server
                 DateTime end = DateTime.Now;
                 Logger.Info("Request handled in {0}ms", (end-start).TotalMilliseconds);
             }
+        }
+
+        private bool WasServedByStaticFile(HttpListenerContext context, string localPath)
+        {
+            if (staticServePath == null)
+                return false;
+            var possibleStaticFile = Path.Combine(staticServePath,
+                localPath.StartsWith("/") ? localPath.Substring(1) : localPath);
+            if (ExistsInServePath(possibleStaticFile))
+            {
+                context.Response.ContentType = MimeTypeMap.GetMimeType(Path.GetExtension(possibleStaticFile));
+                context.Response.ContentLength64 = new FileInfo(possibleStaticFile).Length;
+                using (var file = File.OpenRead(possibleStaticFile))
+                {
+                    file.CopyTo(context.Response.OutputStream);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private bool ExistsInServePath(string possibleStaticFile)
+        {
+            var absolute = Path.GetFullPath(possibleStaticFile);
+            return absolute.StartsWith(staticServePath) && File.Exists(absolute);
         }
 
         private void HandleApiCall(HttpListenerContext context, StreamWriter streamWriter)

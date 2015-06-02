@@ -22,6 +22,7 @@ namespace OpenCVR
             BindUpdater();
 
             Bind<ICvrHttpServer>().To<CvrHttpServer>();
+            Bind<string>().ToConstant(@"..\..\..\client\dist").WhenInjectedInto<CvrHttpServer>();
             Bind<ICvrEmailExtractor>().To<CvrEmailExtractor>();
             Bind<ICvrParser>().To<CvrParser>();
 
