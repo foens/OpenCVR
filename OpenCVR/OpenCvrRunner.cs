@@ -17,7 +17,7 @@ namespace OpenCVR
         public void Start()
         {
             kernel = new StandardKernel(new OpenCvrModule());
-            kernel.Get<CvrPersistence>().UpgradeSchemaIfRequired();
+            kernel.Get<ICvrPersistence>().UpgradeSchemaIfRequired();
             httpServer = kernel.Get<ICvrHttpServer>();
             updater = kernel.Get<ICvrUpdater>();
 

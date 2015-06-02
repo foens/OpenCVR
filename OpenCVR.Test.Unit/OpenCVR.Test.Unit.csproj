@@ -89,7 +89,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Persistence\CvrPersistenceTests.cs" />
-    <Compile Include="Persistence\PersistenceTransaction.cs" />
     <Compile Include="Persistence\PersistenceUtilTests.cs" />
     <Compile Include="Update\CvrUpdateTests.cs" />
     <Compile Include="Server\CvrHttpServerTests.cs" />

@@ -39,9 +39,8 @@ namespace OpenCVR.Update.Parse
             }
         }
 
-        static readonly string[] SizeSuffixes =
-                   { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-        static string SizeSuffix(Int64 value)
+        static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+        static string SizeSuffix(long value)
         {
             if (value < 0) { return "-" + SizeSuffix(-value); }
             if (value == 0) { return "0.0 bytes"; }

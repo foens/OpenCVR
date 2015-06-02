@@ -1,6 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Configuration;
+using System.Data.Common;
 using OpenCVR.Persistence;
 using OpenCVR.Server;
 using OpenCVR.Update;
@@ -10,11 +9,6 @@ using OpenCVR.Update.Parse;
 using Microsoft.Exchange.WebServices.Data;
 using Ninject.Modules;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
-#if (__MonoCS__)
-using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
-#else
-using System.Data.SQLite;
-#endif
 
 namespace OpenCVR
 {
@@ -24,8 +18,9 @@ namespace OpenCVR
         {
             BindUpdater();
 
-            Bind<ICvrHttpServer>().To<CvrHttpServer>();
-            Bind<string>().ToConstant(ConfigurationManager.AppSettings["staticFilesServePath"]).WhenInjectedInto<CvrHttpServer>();
+            Bind<ICvrHttpServer>().To<CvrHttpServer>()
+                .WithConstructorArgument("bindAddress", ConfigurationManager.AppSettings["httpBindAddress"])
+                .WithConstructorArgument("staticServePath", ConfigurationManager.AppSettings["staticFilesServePath"]);
             Bind<ICvrEmailExtractor>().To<CvrEmailExtractor>();
             Bind<ICvrParser>().To<CvrParser>();
 
@@ -53,8 +48,7 @@ namespace OpenCVR
 
         private void BindPersistence()
         {
-            Bind<SQLiteConnection>().ToConstructor(c => new SQLiteConnection(c.Inject<string>()));
-            Bind<string>().ToConstant("Data Source=" + ConfigurationManager.AppSettings["databaseFile"] + ";Version=3;").WhenInjectedInto<SQLiteConnection>();
+            Bind<DbConnection>().ToMethod(c => PersistenceUtil.CreateConnection(("Data Source=" + ConfigurationManager.AppSettings["databaseFile"] + ";Version=3;")));
             Bind<ICvrPersistence>().To<CvrPersistence>();
         }
     }

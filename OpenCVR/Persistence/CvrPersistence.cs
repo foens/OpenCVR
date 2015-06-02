@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Globalization;
 using OpenCVR.Model;
 #if (__MonoCS__)
@@ -14,9 +15,9 @@ namespace OpenCVR.Persistence
 {
     class CvrPersistence : ICvrPersistence
     {
-        private readonly SQLiteConnection connection;
+        private readonly DbConnection connection;
 
-        public CvrPersistence(SQLiteConnection connection)
+        public CvrPersistence(DbConnection connection)
         {
             this.connection = connection;
             connection.Open();
@@ -60,18 +61,14 @@ namespace OpenCVR.Persistence
             PersistenceUtil.CreateCommand(connection, commandText, parameters).ExecuteNonQuery();
         }
 
-        private SQLiteDataReader ExecuteQuery(string commandText, Dictionary<string, object> parameters = null)
+        private DbDataReader ExecuteQuery(string commandText, Dictionary<string, object> parameters = null)
         {
             return PersistenceUtil.CreateCommand(connection, commandText, parameters).ExecuteReader();
         }
 
         private long GetUserVersion()
         {
-            var command = new SQLiteCommand
-            {
-                Connection = connection,
-                CommandText = "PRAGMA user_version"
-            };
+            var command = PersistenceUtil.CreateCommand(connection, "PRAGMA user_version");
             return (long)command.ExecuteScalar();
         }
 
@@ -90,7 +87,7 @@ namespace OpenCVR.Persistence
             }
         }
 
-        private static Company ReaderToCompany(SQLiteDataReader r)
+        private static Company ReaderToCompany(DbDataReader r)
         {
             return new Company
             {
@@ -105,7 +102,7 @@ namespace OpenCVR.Persistence
             };
         }
 
-        private static long? GetLongOrNull(SQLiteDataReader r, string key)
+        private static long? GetLongOrNull(DbDataReader r, string key)
         {
             var index = r.GetOrdinal(key);
             if (r.IsDBNull(index))

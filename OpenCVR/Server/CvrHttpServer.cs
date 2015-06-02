@@ -15,15 +15,17 @@ namespace OpenCVR.Server
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly ICvrPersistence persistence;
+        private readonly string bindAddress;
         private readonly string staticServePath;
         private readonly HttpListener httpListener;
 
         private volatile bool isListening;
         private Thread serverThread;
 
-        public CvrHttpServer(ICvrPersistence persistence, string staticServePath = null)
+        public CvrHttpServer(ICvrPersistence persistence, string bindAddress, string staticServePath = null)
         {
             this.persistence = persistence;
+            this.bindAddress = bindAddress;
             if(staticServePath != null)
             { 
                 this.staticServePath = Path.GetFullPath(staticServePath);
@@ -36,7 +38,7 @@ namespace OpenCVR.Server
 
         void SetupHttpListener()
         {
-            httpListener.Prefixes.Add("http://localhost:8134/");
+            httpListener.Prefixes.Add(bindAddress);
         }
 
         public void Start()

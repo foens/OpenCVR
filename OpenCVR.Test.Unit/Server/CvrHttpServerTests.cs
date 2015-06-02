@@ -19,7 +19,7 @@ namespace OpenCVR.Test.Unit.Server
         public void Setup()
         {
             persistence = new Mock<ICvrPersistence>();
-            server = new CvrHttpServer(persistence.Object);
+            server = new CvrHttpServer(persistence.Object, "http://localhost:8134/");
             server.Start();
         }
 

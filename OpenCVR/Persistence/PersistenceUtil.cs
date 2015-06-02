@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-#if (__MonoCS__)
-using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
-using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
-using SQLiteDataReader = Mono.Data.Sqlite.SqliteDataReader;
-#else
+using System.Data.Common;
+using Mono.Data.Sqlite;
 using System.Data.SQLite;
-#endif
 
 namespace OpenCVR.Persistence
 {
     internal class PersistenceUtil
     {
+        public static DbConnection CreateConnection(string connectionString)
+        {
+            if(IsRunningOnMono())
+                return new SqliteConnection(connectionString);
+            return new SQLiteConnection(connectionString);
+        }
+
         public static DateTime? OptionalMillisecondsSinceEpochToDateTime(object unixTimeStamp)
         {
             if (unixTimeStamp == null)
@@ -37,24 +40,42 @@ namespace OpenCVR.Persistence
             return (long)(dateTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
         }
 
-        public static SQLiteCommand CreateCommand(SQLiteConnection connection, string commandText, Dictionary<string, object> parameters)
+        public static DbCommand CreateCommand(DbConnection connection, string commandText, Dictionary<string, object> parameters = null)
         {
-            var command = new SQLiteCommand
-            {
-                Connection = connection,
-                CommandText = commandText
-            };
+            var command = CreateCommandInternal();
+            command.Connection = connection;
+            command.CommandText = commandText;
+
             if (parameters != null)
             {
                 foreach (var parameter in parameters)
                 {
-                    command.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    command.Parameters.Add(CreateParameter(parameter.Key, parameter.Value));
                 }
             }
             return command;
         }
 
-        public static string GetNullableString(SQLiteDataReader reader, string key)
+        private static DbParameter CreateParameter(string key, object value)
+        {
+            if(IsRunningOnMono())
+                return new SqliteParameter(key, value);
+            return new SQLiteParameter(key, value);
+        }
+
+        private static DbCommand CreateCommandInternal()
+        {
+            if (IsRunningOnMono())
+                return new SqliteCommand();
+            return new SQLiteCommand();
+        }
+
+        public static bool IsRunningOnMono()
+        {
+            return Type.GetType("Mono.Runtime") != null;
+        }
+
+        public static string GetNullableString(DbDataReader reader, string key)
         {
             int index = reader.GetOrdinal(key);
             if (reader.IsDBNull(index))

@@ -1,16 +1,12 @@
-#if (__MonoCS__)
-using SQLiteTransaction = Mono.Data.Sqlite.SqliteTransaction;
-#else
-using System.Data.SQLite;
-#endif
+using System.Data.Common;
 
 namespace OpenCVR.Persistence
 {
     internal class PersistenceTransaction : IPersistenceTransaction
     {
-        private readonly SQLiteTransaction transaction;
+        private readonly DbTransaction transaction;
 
-        public PersistenceTransaction(SQLiteTransaction transaction)
+        public PersistenceTransaction(DbTransaction transaction)
         {
             this.transaction = transaction;
         }

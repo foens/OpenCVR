@@ -1,26 +1,21 @@
 ﻿using System;
+using System.Data.Common;
 using NUnit.Framework;
 using OpenCVR.Model;
 using OpenCVR.Persistence;
-#if (__MonoCS__)
-using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
-using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
-#else
-using System.Data.SQLite;
-#endif
 
 namespace OpenCVR.Test.Unit.Persistence
 {
     [TestFixture]
     public class CvrPersistenceTests
     {
-        private SQLiteConnection connection;
+        private DbConnection connection;
         private ICvrPersistence persistence;
 
         [SetUp]
         public void Setup()
         {
-            connection = new SQLiteConnection("Data Source=:memory:;Version=3;New=true");
+            connection = PersistenceUtil.CreateConnection("Data Source=:memory:;Version=3;New=true");
             persistence = new CvrPersistence(connection);
         }
 
@@ -34,11 +29,7 @@ namespace OpenCVR.Test.Unit.Persistence
 
         private int GetUserVersion()
         {
-            var command = new SQLiteCommand
-            {
-                Connection = connection,
-                CommandText = "PRAGMA user_version"
-            };
+            var command = PersistenceUtil.CreateCommand(connection, "PRAGMA user_version");
             return (int) (long) command.ExecuteScalar();
         }
 
