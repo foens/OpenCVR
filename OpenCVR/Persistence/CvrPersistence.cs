@@ -23,8 +23,9 @@ namespace OpenCVR.Persistence
                 if (GetUserVersion() == 0)
                 {
                     ExecuteNonQuery("CREATE TABLE Company" +
-                                    "(" +
-                        "Vat INT PRIMARY KEY NOT NULL," +
+                        "(" +
+                            "Vat INT PRIMARY KEY NOT NULL," +
+                            "VatText text, " +
                             "StartDate int, " +
                             "EndDate int, " +
                             "UpdatedDate int, " +
@@ -37,7 +38,8 @@ namespace OpenCVR.Persistence
                         "Key text PRIMARY KEY NOT NULL," +
                             "Value text" +
                         ");");
-                    ExecuteNonQuery("CREATE INDEX NameLikeIndex ON Company (NAME COLLATE NOCASE);");
+                    ExecuteNonQuery("CREATE INDEX NameLikeIndex ON Company (Name COLLATE NOCASE);");
+                    ExecuteNonQuery("CREATE INDEX VatLikeIndex ON Company (VatText COLLATE NOCASE);");
                     SetUserVersion(1);
                 }
                 transaction.Commit();
@@ -135,16 +137,17 @@ namespace OpenCVR.Persistence
         public void InsertOrReplaceCompany(Company c)
         {
             ExecuteNonQuery("INSERT OR REPLACE INTO Company " +
-                                   "(Vat, StartDate, EndDate, UpdatedDate, OptedOutForUnsolicictedAdvertising, NameValidFrom, Name) VALUES " +
-                                   "(@vat,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom,@name)", new Dictionary<string, object>
+                                   "(Vat, VatText, StartDate, EndDate, UpdatedDate, OptedOutForUnsolicictedAdvertising, NameValidFrom, Name) VALUES " +
+                                   "(@vat,@vatText,@startDate,@endDate,@updateDate,@OptedOutForUnsolicictedAdvertising,@nameValidFrom,@name)", new Dictionary<string, object>
                     {
                         {"@vat", c.VatNumber },
+                        {"@vatText",  c.VatNumber.ToString()},
                         {"@startDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.StartDate)},
                         {"@endDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.EndDate)},
                         {"@updateDate",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.UpdatedDate)},
                         {"@OptedOutForUnsolicictedAdvertising",  c.OptedOutForUnsolicictedAdvertising ? 1 : 0},
                         {"@nameValidFrom",  PersistenceUtil.OptionalDateTimeMillisecondsSinceEpoch(c.NameValidFrom)},
-                        {"@name",  c.Name},
+                        {"@name",  c.Name}
                     });
         }
 
@@ -158,12 +161,10 @@ namespace OpenCVR.Persistence
 
         public Company Search(string search)
         {
-            const char escapeCharacter = '\\';
-            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat LIKE @vat ESCAPE @escape OR Name LIKE @name ESCAPE @escape LIMIT 1", new Dictionary<string, object>
+            using (var r = ExecuteQuery("SELECT * FROM Company WHERE VatText LIKE @vat OR Name LIKE @name LIMIT 1", new Dictionary<string, object>
             {
-                {"@vat", EscapeLikeValue(search, escapeCharacter) + "%"},
-                {"@name", EscapeLikeValue(search, escapeCharacter) + "%"},
-                {"@escape", escapeCharacter.ToString() }
+                {"@vat", search + "%"},
+                {"@name", search + "%"},
             }))
             {
                 if (r.Read())
@@ -172,15 +173,6 @@ namespace OpenCVR.Persistence
                 }
                 return null;
             }
-        }
-
-        private static string EscapeLikeValue(string like, char escapeCharacter)
-        {
-            return like.Replace("" + escapeCharacter, "" + escapeCharacter + escapeCharacter)
-                .Replace("%", escapeCharacter + "%")
-                .Replace("_", escapeCharacter + "_")
-                .Replace("[", escapeCharacter + "[")
-                .Replace("]", escapeCharacter + "]");
         }
     }
 }
