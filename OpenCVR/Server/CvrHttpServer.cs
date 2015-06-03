@@ -85,10 +85,6 @@ namespace OpenCVR.Server
                 {
                     HandleApiCall(context, streamWriter);
                 }
-                else if (localPath.Equals("/"))
-                {
-                    streamWriter.Write("Hello world");
-                }
                 else
                 {
                     HandleRequestNotFound(context, streamWriter);
@@ -110,10 +106,16 @@ namespace OpenCVR.Server
         {
             if (staticServePath == null)
                 return false;
+            if (localPath.Equals("/"))
+                localPath = "/index.html";
             var possibleStaticFile = Path.Combine(staticServePath,
                 localPath.StartsWith("/") ? localPath.Substring(1) : localPath);
             if (ExistsInServePath(possibleStaticFile))
             {
+                var extension = Path.GetExtension(localPath);
+                if(extension != ".html" && extension != ".ico")
+                    context.Response.AddHeader("Cache-Control", "max-age=31556926");
+                if(localPath.Equals("/index.html"))
                 context.Response.ContentType = MimeTypeMap.GetMimeType(Path.GetExtension(possibleStaticFile));
                 context.Response.ContentLength64 = new FileInfo(possibleStaticFile).Length;
                 using (var file = File.OpenRead(possibleStaticFile))
