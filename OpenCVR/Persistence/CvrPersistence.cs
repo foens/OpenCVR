@@ -72,7 +72,7 @@ namespace OpenCVR.Persistence
                 {"@vat", vatNumber }
             }))
             {
-                if (r.HasRows && r.Read())
+                if (r.Read())
                 {
                     return ReaderToCompany(r);
                 }
@@ -110,7 +110,7 @@ namespace OpenCVR.Persistence
                 {"@key", "lastProcessedEmailReceivedTime"}
             }))
             {
-                if (r.HasRows && r.Read())
+                if (r.Read())
                 {
                     return DateTime.ParseExact((string) r["Value"], "O", CultureInfo.InvariantCulture);
                 }
@@ -159,14 +159,14 @@ namespace OpenCVR.Persistence
         public Company Search(string search)
         {
             const char escapeCharacter = '\\';
-            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat LIKE @vat ESCAPE @escape OR Name LIKE @name ESCAPE @escape", new Dictionary<string, object>
+            using (var r = ExecuteQuery("SELECT * FROM Company WHERE Vat LIKE @vat ESCAPE @escape OR Name LIKE @name ESCAPE @escape LIMIT 1", new Dictionary<string, object>
             {
                 {"@vat", EscapeLikeValue(search, escapeCharacter) + "%"},
                 {"@name", EscapeLikeValue(search, escapeCharacter) + "%"},
                 {"@escape", escapeCharacter.ToString() }
             }))
             {
-                if (r.HasRows && r.Read())
+                if (r.Read())
                 {
                     return ReaderToCompany(r);
                 }
