@@ -3,13 +3,6 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Globalization;
 using OpenCVR.Model;
-#if (__MonoCS__)
-using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
-using SQLiteConnection = Mono.Data.Sqlite.SqliteConnection;
-using SQLiteDataReader = Mono.Data.Sqlite.SqliteDataReader;
-#else
-using System.Data.SQLite;
-#endif
 
 namespace OpenCVR.Persistence
 {
