@@ -24,12 +24,6 @@ namespace OpenCVR.Test.Unit.Server
         }
 
         [Test]
-        public void TestCanExecuteHelloWorld()
-        {
-            Assert.AreEqual("Hello world", GetResponseAndStopServer("").Body);
-        }
-
-        [Test]
         public void TestCanExecuteSearch()
         {
             Company c = new Company
