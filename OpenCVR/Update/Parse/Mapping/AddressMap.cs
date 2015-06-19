@@ -18,7 +18,7 @@ namespace OpenCVR.Update.Parse.Mapping
             Map(m => m.Floor).Name(prefix + "_etage").TypeConverter<NullStringConverter>();
             Map(m => m.SideDoor).Name(prefix + "_sidedoer").TypeConverter<NullStringConverter>();
             Map(m => m.ZipCode).Name(prefix + "_postnr");
-            Map(m => m.PostalDisrict).Name(prefix + "_postdistrikt").TypeConverter<NullStringConverter>();
+            Map(m => m.PostalDistrict).Name(prefix + "_postdistrikt").TypeConverter<NullStringConverter>();
             Map(m => m.CityName).Name(prefix + "_bynavn").TypeConverter<NullStringConverter>();
             Map(m => m.MunicipalityCode).Name(prefix + "_kommune_kode");
             Map(m => m.MunicipalityText).Name(prefix + "_kommune_tekst").TypeConverter<NullStringConverter>();

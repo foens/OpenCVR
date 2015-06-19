@@ -48,12 +48,17 @@ namespace OpenCVR.Persistence
 
             if (parameters != null)
             {
-                foreach (var parameter in parameters)
-                {
-                    command.Parameters.Add(CreateParameter(parameter.Key, parameter.Value));
-                }
+                AddParametersToCommand(command, parameters);
             }
             return command;
+        }
+
+        public static void AddParametersToCommand(DbCommand command, Dictionary<string, object> parameters)
+        {
+            foreach (var parameter in parameters)
+            {
+                command.Parameters.Add(CreateParameter(parameter.Key, parameter.Value));
+            }
         }
 
         private static DbParameter CreateParameter(string key, object value)
@@ -81,6 +86,14 @@ namespace OpenCVR.Persistence
             if (reader.IsDBNull(index))
                 return null;
             return reader.GetString(index);
+        }
+
+        public static int? GetNullableInt(DbDataReader reader, string key)
+        {
+            int index = reader.GetOrdinal(key);
+            if (reader.IsDBNull(index))
+                return null;
+            return reader.GetInt32(index);
         }
     }
 }

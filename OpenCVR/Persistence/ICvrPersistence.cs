@@ -9,7 +9,7 @@ namespace OpenCVR.Persistence
         void UpgradeSchemaIfRequired();
         DateTime GetLastProcessedEmailReceivedTime();
         void SetLastProcessedEmailReceivedTime(DateTime updateTime);
-        IPersistenceTransaction StartTransaction();
+        ICompanyUpdateTransaction BeginCompanyUpdateTransaction();
         void InsertOrReplaceCompany(Company c);
         void DeleteCompany(int vatNumber);
         Company FindWithVat(int vatNumber);

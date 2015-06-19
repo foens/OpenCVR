@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using NLog;
 using OpenCVR.Model;
 using OpenCVR.Persistence;
@@ -49,24 +50,27 @@ namespace OpenCVR.Update
 
         private void UpdatePersistence(CvrEntries entries)
         {
-            using (var t = persistence.StartTransaction())
+            DateTime start = DateTime.Now;
+            using (var t = persistence.BeginCompanyUpdateTransaction())
             {
                 foreach (var c in entries.Companies)
-                    ApplyCompanyChangesToPersistence(c);
+                    ApplyCompanyChangesToPersistence(c, t);
                 t.Commit();
             }
+            DateTime end = DateTime.Now;
+            Logger.Info("SQL operations took {0} ms", (end - start).TotalMilliseconds);
         }
 
-        private void ApplyCompanyChangesToPersistence(DeltaCompany c)
+        private void ApplyCompanyChangesToPersistence(DeltaCompany c, ICompanyUpdateTransaction t)
         {
             switch (c.ModificationStatus)
             {
                 case ModificationStatus.New:
                 case ModificationStatus.Modified:
-                    persistence.InsertOrReplaceCompany(c);
+                    t.InsertOrReplaceCompany(c);
                     break;
                 case ModificationStatus.Removed:
-                    persistence.DeleteCompany(c.VatNumber);
+                    t.DeleteCompany(c.VatNumber);
                     break;
             }
         }

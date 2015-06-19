@@ -80,8 +80,8 @@ namespace OpenCVR.Test.Unit.Update
             emailExtractor.Setup(e => e.ParseOutLoginId(email.Text)).Returns(loginId);
             httpService.Setup(e => e.Download(uri, It.Is<NetworkCredential>(nw => nw.UserName.Equals(loginId) && nw.Password.Equals(Password)))).Returns(path);
             parser.Setup(e => e.Parse(path)).Returns(cvrEntries);
-            var transaction = new Mock<IPersistenceTransaction>();
-            persistence.Setup(e => e.StartTransaction()).Returns(transaction.Object);
+            var transaction = new Mock<ICompanyUpdateTransaction>();
+            persistence.Setup(e => e.BeginCompanyUpdateTransaction()).Returns(transaction.Object);
 
             var updateApplied = cvrUpdater.TryUpdate();
 
@@ -115,8 +115,8 @@ namespace OpenCVR.Test.Unit.Update
             emailExtractor.Setup(e => e.ParseOutLoginId(email.Text)).Returns(loginId);
             httpService.Setup(e => e.Download(uri, It.Is<NetworkCredential>(nw => nw.UserName.Equals(loginId) && nw.Password.Equals(Password)))).Returns(path);
             parser.Setup(e => e.Parse(path)).Returns(cvrEntries);
-            var transaction = new Mock<IPersistenceTransaction>();
-            persistence.Setup(e => e.StartTransaction()).Returns(transaction.Object);
+            var transaction = new Mock<ICompanyUpdateTransaction>();
+            persistence.Setup(e => e.BeginCompanyUpdateTransaction()).Returns(transaction.Object);
 
             cvrUpdater.TryUpdate();
 
@@ -146,8 +146,8 @@ namespace OpenCVR.Test.Unit.Update
             emailExtractor.Setup(e => e.ParseOutLoginId(email.Text)).Returns(loginId);
             httpService.Setup(e => e.Download(uri, It.Is<NetworkCredential>(nw => nw.UserName.Equals(loginId) && nw.Password.Equals(Password)))).Returns(path);
             parser.Setup(e => e.Parse(path)).Returns(cvrEntries);
-            var transaction = new Mock<IPersistenceTransaction>();
-            persistence.Setup(e => e.StartTransaction()).Returns(transaction.Object);
+            var transaction = new Mock<ICompanyUpdateTransaction>();
+            persistence.Setup(e => e.BeginCompanyUpdateTransaction()).Returns(transaction.Object);
 
             cvrUpdater.TryUpdate();
 

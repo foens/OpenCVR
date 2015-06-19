@@ -46,10 +46,10 @@ namespace OpenCVR.Update.Email
 
         private static CvrEmail SearchAndFindEmailIfAny(DateTime lastItemReceivedTime, ExchangeService service)
         {
-            ItemView view = new ItemView(10);
+            ItemView view = new ItemView(1);
             view.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
             FindItemsResults<Item> findResults = service.FindItems(WellKnownFolderName.Inbox, GenerateSearchFilters(lastItemReceivedTime), view);
-            logger.Info("Found " + findResults.Items.Count + " emails");
+            logger.Info("Found " + findResults.TotalCount + " unprocessed emails");
             return ToCvrEmail(findResults);
         }
 

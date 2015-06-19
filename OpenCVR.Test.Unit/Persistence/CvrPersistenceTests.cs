@@ -143,7 +143,7 @@ namespace OpenCVR.Test.Unit.Persistence
         [Test]
         public void TestStartTransactionReturnsAnInstance()
         {
-            Assert.NotNull(persistence.StartTransaction());
+            Assert.NotNull(persistence.BeginCompanyUpdateTransaction());
         }
 
         [Test]

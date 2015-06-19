@@ -14,7 +14,7 @@ namespace OpenCVR.Model
         public string Floor { get; set; }
         public string SideDoor { get; set; }
         public int? ZipCode { get; set; }
-        public string PostalDisrict { get; set; }
+        public string PostalDistrict { get; set; }
         public string CityName { get; set; }
         public int? MunicipalityCode { get; set; }
         public string MunicipalityText { get; set; }
@@ -24,7 +24,7 @@ namespace OpenCVR.Model
 
         protected bool Equals(Address other)
         {
-            return string.Equals(AddressFreeText, other.AddressFreeText) && string.Equals(CityName, other.CityName) && string.Equals(CoName, other.CoName) && string.Equals(Floor, other.Floor) && HouseNumberFrom == other.HouseNumberFrom && HouseNumberTo == other.HouseNumberTo && string.Equals(LetterFrom, other.LetterFrom) && string.Equals(LetterTo, other.LetterTo) && MunicipalityCode == other.MunicipalityCode && string.Equals(MunicipalityText, other.MunicipalityText) && PostalBox == other.PostalBox && string.Equals(PostalDisrict, other.PostalDisrict) && RoadCode == other.RoadCode && string.Equals(SideDoor, other.SideDoor) && string.Equals(StreetName, other.StreetName) && ValidFrom.Equals(other.ValidFrom) && ZipCode == other.ZipCode;
+            return string.Equals(AddressFreeText, other.AddressFreeText) && string.Equals(CityName, other.CityName) && string.Equals(CoName, other.CoName) && string.Equals(Floor, other.Floor) && HouseNumberFrom == other.HouseNumberFrom && HouseNumberTo == other.HouseNumberTo && string.Equals(LetterFrom, other.LetterFrom) && string.Equals(LetterTo, other.LetterTo) && MunicipalityCode == other.MunicipalityCode && string.Equals(MunicipalityText, other.MunicipalityText) && PostalBox == other.PostalBox && string.Equals(PostalDistrict, other.PostalDistrict) && RoadCode == other.RoadCode && string.Equals(SideDoor, other.SideDoor) && string.Equals(StreetName, other.StreetName) && ValidFrom.Equals(other.ValidFrom) && ZipCode == other.ZipCode;
         }
 
         public override bool Equals(object obj)
@@ -50,7 +50,7 @@ namespace OpenCVR.Model
                 hashCode = (hashCode*397) ^ MunicipalityCode.GetHashCode();
                 hashCode = (hashCode*397) ^ (MunicipalityText != null ? MunicipalityText.GetHashCode() : 0);
                 hashCode = (hashCode*397) ^ PostalBox.GetHashCode();
-                hashCode = (hashCode*397) ^ (PostalDisrict != null ? PostalDisrict.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (PostalDistrict != null ? PostalDistrict.GetHashCode() : 0);
                 hashCode = (hashCode*397) ^ RoadCode.GetHashCode();
                 hashCode = (hashCode*397) ^ (SideDoor != null ? SideDoor.GetHashCode() : 0);
                 hashCode = (hashCode*397) ^ (StreetName != null ? StreetName.GetHashCode() : 0);
@@ -62,7 +62,7 @@ namespace OpenCVR.Model
 
         public override string ToString()
         {
-            return $"ValidFrom: {ValidFrom}, StreetName: {StreetName}, RoadCode: {RoadCode}, HouseNumberFrom: {HouseNumberFrom}, HouseNumberTo: {HouseNumberTo}, LetterFrom: {LetterFrom}, LetterTo: {LetterTo}, Floor: {Floor}, SideDoor: {SideDoor}, ZipCode: {ZipCode}, PostalDisrict: {PostalDisrict}, CityName: {CityName}, MunicipalityCode: {MunicipalityCode}, MunicipalityText: {MunicipalityText}, PostalBox: {PostalBox}, CoName: {CoName}, AddressFreeText: {AddressFreeText}";
+            return $"ValidFrom: {ValidFrom}, StreetName: {StreetName}, RoadCode: {RoadCode}, HouseNumberFrom: {HouseNumberFrom}, HouseNumberTo: {HouseNumberTo}, LetterFrom: {LetterFrom}, LetterTo: {LetterTo}, Floor: {Floor}, SideDoor: {SideDoor}, ZipCode: {ZipCode}, PostalDisrict: {PostalDistrict}, CityName: {CityName}, MunicipalityCode: {MunicipalityCode}, MunicipalityText: {MunicipalityText}, PostalBox: {PostalBox}, CoName: {CoName}, AddressFreeText: {AddressFreeText}";
         }
     }
 }
